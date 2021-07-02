@@ -47,7 +47,7 @@ class FieldElement {
 	}
 
 	toString() {
-		return `{num:${num}, prime:${prime}}`;
+		return `{num:${this.num}, prime:${this.prime}}`;
 	}
 }
 export default FieldElement;
