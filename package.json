@@ -1,0 +1,27 @@
+{
+	"name": "blockchain",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "mocha test/**/*.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/koga73/blockchain.git"
+	},
+	"keywords": [
+		"blockchain"
+	],
+	"author": "AJ Savino",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/koga73/blockchain/issues"
+	},
+	"homepage": "https://github.com/koga73/blockchain#readme",
+	"dependencies": {
+		"chai": "^4.3.4",
+		"mocha": "^9.0.1"
+	}
+}
