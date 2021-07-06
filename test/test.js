@@ -26,6 +26,7 @@ describe("--- FieldElement ---\n", function () {
 	it("multiplication", function () {
 		expect(fe1.multiply(fe2).num).to.equal(2);
 		expect(fe1.multiply(fe3).num).to.equal(1);
+		expect(fe1.multiply(3).num).to.equal(2);
 	});
 
 	it("division", function () {
@@ -35,6 +36,10 @@ describe("--- FieldElement ---\n", function () {
 
 		expect(fe4.divide(fe6).num).to.equal(3);
 		expect(fe6.divide(fe5).num).to.equal(9);
+	});
+
+	it("exponentation", function () {
+		expect(fe1.pow(2).num).to.equal(2);
 	});
 });
 
@@ -61,5 +66,46 @@ describe("--- Point ---\n", function () {
 		const p5 = p3.add(p1);
 		expect(p5.x).to.equal(3);
 		expect(p5.y).to.equal(-7);
+	});
+
+	it("FieldElement", function () {
+		const prime = 223;
+		const a = new FieldElement(0, prime);
+		const b = new FieldElement(7, prime);
+
+		const validPoints = [
+			[new FieldElement(192, prime), new FieldElement(105, prime)],
+			[new FieldElement(17, prime), new FieldElement(56, prime)],
+			[new FieldElement(1, prime), new FieldElement(193, prime)]
+		];
+		for (let i = 0; i < validPoints.length; i++) {
+			const vp = validPoints[i];
+			expect(() => new Point(vp[0], vp[1], a, b)).to.not.throw();
+		}
+
+		const invalidPoints = [
+			[new FieldElement(200, prime), new FieldElement(119, prime)],
+			[new FieldElement(42, prime), new FieldElement(99, prime)]
+		];
+		for (let i = 0; i < invalidPoints.length; i++) {
+			const ip = invalidPoints[i];
+			expect(() => new Point(ip[0], ip[1], a, b)).to.throw();
+		}
+	});
+
+	it("FieldElement add", function () {
+		const prime = 223;
+		const a = new FieldElement(0, prime);
+		const b = new FieldElement(7, prime);
+		const x1 = new FieldElement(192, prime);
+		const y1 = new FieldElement(105, prime);
+		const x2 = new FieldElement(17, prime);
+		const y2 = new FieldElement(56, prime);
+		const p1 = new Point(x1, y1, a, b);
+		const p2 = new Point(x2, y2, a, b);
+
+		const p3 = p1.add(p2);
+		expect(p3.x.num).to.equal(170);
+		expect(p3.y.num).to.equal(142);
 	});
 });

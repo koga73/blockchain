@@ -1,3 +1,4 @@
+//Finite Field
 class FieldElement {
 	constructor(num, prime) {
 		if (num >= prime || num < 0) {
@@ -9,6 +10,10 @@ class FieldElement {
 
 	equals(fieldElement) {
 		return fieldElement && fieldElement.num === this.num && fieldElement.prime === this.prime;
+	}
+
+	notEquals(fieldElement) {
+		return !this.equals(fieldElement);
 	}
 
 	add(fieldElement) {
@@ -28,15 +33,17 @@ class FieldElement {
 	}
 
 	multiply(fieldElement) {
-		if (fieldElement.prime !== this.prime) {
+		const isFieldElement = fieldElement instanceof FieldElement;
+		if (isFieldElement && fieldElement.prime !== this.prime) {
 			throw new Error("Cannot manipulate fieldElements of different sets");
 		}
-		return new FieldElement((this.num * fieldElement.num) % this.prime, this.prime);
+		const num = isFieldElement ? fieldElement.num : fieldElement;
+		return new FieldElement((this.num * num) % this.prime, this.prime);
 	}
 
 	pow(exponent = 2) {
 		const n = exponent % (this.prime - 1);
-		return new FieldElement(Math.pow(this.num, n) % this.prime, this.prime);
+		return new FieldElement(Number(BigInt(this.num) ** BigInt(n) % BigInt(this.prime)), this.prime);
 	}
 
 	divide(fieldElement) {
@@ -44,6 +51,10 @@ class FieldElement {
 			throw new Error("Cannot manipulate fieldElements of different sets");
 		}
 		return this.multiply(fieldElement.pow(fieldElement.prime - 2));
+	}
+
+	clone(num = null, prime = null) {
+		return new FieldElement(num !== null ? num : this.num, prime !== null ? prime : this.prime);
 	}
 
 	toString() {
