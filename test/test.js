@@ -109,3 +109,16 @@ describe("--- Point ---\n", function () {
 		expect(p3.y.num).to.equal(142);
 	});
 });
+
+describe("--- secp256k1 ---\n", function () {
+	const gx = 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798n;
+	const gy = 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8n;
+	const p = 2n ** 256n - 2n ** 32n - 977n;
+
+	it("on curve", function () {
+		const result1 = gy ** 2n % p;
+		const result2 = (gx ** 3n + 7n) % p;
+
+		expect(result1 === result2).to.equal(true);
+	});
+});

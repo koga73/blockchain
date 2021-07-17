@@ -83,6 +83,20 @@ class Point {
 		return new Point(x, y, this.a, this.b);
 	}
 
+	multiply(coefficient) {
+		var coef = coefficient;
+		const current = this;
+		const result = new Point(Infinity, Infinity, this.a, this.b);
+		while (coef) {
+			if (coef & 1) {
+				result.add(current);
+			}
+			current.add(current);
+			coef >>= 1;
+		}
+		return result;
+	}
+
 	toString() {
 		return `{x:${this.x}, y:${this.y}, a:${this.a}, b:${this.b}}`;
 	}
