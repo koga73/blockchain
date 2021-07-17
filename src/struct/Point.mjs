@@ -13,11 +13,11 @@ class Point {
 			return;
 		}
 		if (this.isFieldElement) {
-			if (y.pow(2).notEquals(x.pow(3).add(a.multiply(x)).add(b))) {
+			if (y.pow(2n).notEquals(x.pow(3n).add(a.multiply(x)).add(b))) {
 				throw new Error("Point is not on the curve");
 			}
 		} else {
-			if (Math.pow(y, 2) !== Math.pow(x, 3) + a * x + b) {
+			if (y ** 2n !== x ** 3n + a * x + b) {
 				throw new Error("Point is not on the curve");
 			}
 		}
@@ -55,12 +55,12 @@ class Point {
 				if (this.y.num === 0) {
 					return new Point(Infinity, Infinity, this.a, this.b);
 				} else {
-					s = this.x.pow(2).multiply(3).add(this.a).divide(this.y.multiply(2));
-					x = s.pow(2).subtract(this.x.multiply(2));
+					s = this.x.pow(2n).multiply(3n).add(this.a).divide(this.y.multiply(2n));
+					x = s.pow(2n).subtract(this.x.multiply(2n));
 				}
 			} else {
 				s = point.y.subtract(this.y).divide(point.x.subtract(this.x));
-				x = s.pow(2).subtract(this.x).subtract(point.x);
+				x = s.pow(2n).subtract(this.x).subtract(point.x);
 			}
 			y = s.multiply(this.x.subtract(x)).subtract(this.y);
 		} else {
@@ -70,12 +70,12 @@ class Point {
 				if (this.y === 0) {
 					return new Point(Infinity, Infinity, this.a, this.b);
 				} else {
-					s = (3 * Math.pow(this.x, 2) + this.a) / (2 * this.y);
-					x = Math.pow(s, 2) - 2 * this.x;
+					s = (3n * this.x ** 2n + this.a) / (2n * this.y);
+					x = s ** 2n - 2n * this.x;
 				}
 			} else {
 				s = (point.y - this.y) / (point.x - this.x);
-				x = Math.pow(s, 2) - this.x - point.x;
+				x = s ** 2n - this.x - point.x;
 			}
 			y = s * (this.x - x) - this.y;
 		}
@@ -88,7 +88,7 @@ class Point {
 		const current = this;
 		const result = new Point(Infinity, Infinity, this.a, this.b);
 		while (coef) {
-			if (coef & 1) {
+			if (coef & 1n) {
 				result.add(current);
 			}
 			current.add(current);

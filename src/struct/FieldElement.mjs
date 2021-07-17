@@ -41,16 +41,16 @@ class FieldElement {
 		return new FieldElement((this.num * num) % this.prime, this.prime);
 	}
 
-	pow(exponent = 2) {
-		const n = exponent % (this.prime - 1);
-		return new FieldElement(Number(BigInt(this.num) ** BigInt(n) % BigInt(this.prime)), this.prime);
+	pow(exponent = 2n) {
+		const n = exponent % (this.prime - 1n);
+		return new FieldElement(this.num ** n % this.prime, this.prime);
 	}
 
 	divide(fieldElement) {
 		if (fieldElement.prime !== this.prime) {
 			throw new Error("Cannot manipulate fieldElements of different sets");
 		}
-		return this.multiply(fieldElement.pow(fieldElement.prime - 2));
+		return this.multiply(fieldElement.pow(fieldElement.prime - 2n));
 	}
 
 	clone(num = null, prime = null) {
