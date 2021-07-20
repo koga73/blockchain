@@ -38,12 +38,20 @@ class FieldElement {
 			throw new Error("Cannot manipulate fieldElements of different sets");
 		}
 		const num = isFieldElement ? fieldElement.num : fieldElement;
+		if (num === Infinity) {
+			return Infinity;
+		}
 		return new FieldElement((this.num * num) % this.prime, this.prime);
 	}
 
 	pow(exponent = 2n) {
 		const n = exponent % (this.prime - 1n);
-		return new FieldElement(this.num ** n % this.prime, this.prime);
+		try {
+			return new FieldElement(this.num ** n % this.prime, this.prime);
+		} catch (err) {
+			//Number too large
+			return Infinity;
+		}
 	}
 
 	divide(fieldElement) {

@@ -130,6 +130,7 @@ describe("--- secp256k1 ---\n", function () {
 		const g = new Point(x, y, zero, seven);
 		const n = 0xffffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n;
 		const result = g.multiply(n);
-		console.log(result);
+
+		expect(result.equals(g)).to.equal(true);
 	});
 });

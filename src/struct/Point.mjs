@@ -44,22 +44,29 @@ class Point {
 		if (point.x === Infinity) {
 			return new Point(this.x, this.y, this.a, this.b);
 		}
-		var s = 0;
-		var x = Infinity;
-		var y = Infinity;
+		var s = 0n;
+		var x = 0n;
+		var y = 0n;
+		const inf = new Point(Infinity, Infinity, this.a, this.b);
 
 		if (this.isFieldElement) {
 			//Is tangent?
 			if (this.equals(point)) {
 				//Tangent vertical line
 				if (this.y.num === 0) {
-					return new Point(Infinity, Infinity, this.a, this.b);
+					return inf;
 				} else {
 					s = this.x.pow(2n).multiply(3n).add(this.a).divide(this.y.multiply(2n));
+					if (s === Infinity) {
+						return inf;
+					}
 					x = s.pow(2n).subtract(this.x.multiply(2n));
 				}
 			} else {
 				s = point.y.subtract(this.y).divide(point.x.subtract(this.x));
+				if (s === Infinity) {
+					return inf;
+				}
 				x = s.pow(2n).subtract(this.x).subtract(point.x);
 			}
 			y = s.multiply(this.x.subtract(x)).subtract(this.y);
@@ -85,14 +92,14 @@ class Point {
 
 	multiply(coefficient) {
 		var coef = coefficient;
-		const current = this;
-		const result = new Point(Infinity, Infinity, this.a, this.b);
+		var current = this;
+		var result = new Point(Infinity, Infinity, this.a, this.b);
 		while (coef) {
 			if (coef & 1n) {
-				result.add(current);
+				result = result.add(current);
 			}
-			current.add(current);
-			coef >>= 1;
+			current = current.add(current);
+			coef >>= 1n;
 		}
 		return result;
 	}
