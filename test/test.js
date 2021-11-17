@@ -2,6 +2,8 @@ import {expect} from "chai";
 
 import FieldElement from "../src/struct/FieldElement.mjs";
 import Point from "../src/struct/Point.mjs";
+import Wallet from "../src/struct/Wallet.mjs";
+import Chain from "../src/struct/Chain.mjs";
 
 describe("--- FieldElement ---\n", function () {
 	const fe1 = new FieldElement(3n, 7n);
@@ -131,6 +133,17 @@ describe("--- secp256k1 ---\n", function () {
 		const n = 0xffffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n;
 		const result = g.multiply(n);
 
+		//This should return Infinity not be equal
 		expect(result.equals(g)).to.equal(true);
 	});
 });
+
+const satoshi = new Wallet();
+const bob = new Wallet();
+const alice = new Wallet();
+
+satoshi.sendMoney({amount: 50, payeePublicKey: bob.publicKey});
+bob.sendMoney({amount: 23, payeePublicKey: alice.publicKey});
+alice.sendMoney({amount: 5, payeePublicKey: bob.publicKey});
+
+console.log(Chain.instance);
