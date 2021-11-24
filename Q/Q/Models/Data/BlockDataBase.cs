@@ -8,6 +8,7 @@ namespace Q.Models
     {
         public DateTime Timestamp;
         public abstract string Hash { get; }
+        public string Signature;
 
         public BlockDataBase()
         {

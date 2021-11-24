@@ -7,7 +7,9 @@ namespace Q.Models
 {
     public static class BlockChain
     {
+        public static Block Stage = null;
         public static List<Block> Blocks = new List<Block>();
+        public static Dictionary<string, User> Users = new Dictionary<string, User>();
 
         public static Block LastBlock {
             get {
@@ -15,8 +17,22 @@ namespace Q.Models
             }
         }
 
-        public static void Add(Block block){
-            Blocks.Add(block);
+        public static void Commit(){
+            //Store users and unspent transactions in memory
+            foreach (BlockDataBase data in Stage.Data)
+            {
+                if (data is BlockDataRegistration)
+                {
+                    BlockDataRegistration registrationData = (BlockDataRegistration)data;
+                    Users.Add(registrationData.Alias, new User()
+                    {
+                        Alias = registrationData.Alias,
+                        PublicKey = Convert.FromBase64String(registrationData.PublicKey)
+                    });
+                }
+            }
+            Blocks.Add(Stage);
+            Stage = null;
         }
 
         public static string ToString()
@@ -24,7 +40,7 @@ namespace Q.Models
             string output = "";
             foreach (Block block in Blocks)
             {
-                output += "\n" + block;
+                output += $"\n{block},";
             }
             return $"[ {output}\n ]";
         }

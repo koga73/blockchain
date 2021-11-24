@@ -20,7 +20,7 @@ namespace Q.Models
 
         override public string ToString()
         {
-            return $"{{ \"Timestamp\":{Timestamp.Ticks} \"Hash\":\"{Hash}\" \"Alias\":\"{Alias}\" \"PublicKey\":\"{PublicKey}\" }}";
+            return $"{{ \"Timestamp\":{Timestamp.Ticks}, \"Hash\":\"{Hash}\", \"Alias\":\"{Alias}\", \"PublicKey\":\"{PublicKey}\", \"Signature\":\"{Signature}\" }}";
         }
     }
 }

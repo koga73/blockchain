@@ -11,6 +11,7 @@ namespace Q.Models
         public static int MIN_DIFFICULTY = 4; //Number of leading zeros
         public static int MAX_DIFFICULTY = 16; //Number of leading zeros
 
+        public string PreviousBlockHash;
         public DateTime Timestamp;
         public int Version;
         public string Nonce;
@@ -25,11 +26,11 @@ namespace Q.Models
                 return ComputeHash(Nonce);
             }
         }
-        public string MerkelRoot
+        public string MerkleRoot
         {
             get
             {
-                return ComputeMerkelRoot(this.Data);
+                return ComputeMerkleRoot(this.Data);
             }
         }
 
@@ -41,11 +42,11 @@ namespace Q.Models
 
         public string ComputeHash(string nonce)
         {
-            string state = $"{Timestamp.Ticks}-{Version}-{nonce}-{Height}-{MerkelRoot}";
+            string state = $"{PreviousBlockHash}-{Timestamp.Ticks}-{Version}-{nonce}-{Height}-{MerkleRoot}";
             return Utils.ComputeHash(Utils.ComputeHash(state)); //Double hash
         }
 
-        public string ComputeMerkelRoot(List<BlockDataBase> data)
+        public string ComputeMerkleRoot(List<BlockDataBase> data)
         {
             if (data == null)
             {
@@ -62,7 +63,7 @@ namespace Q.Models
                 case 2:
                     return Utils.ComputeHash(data[0].Hash + data[1].Hash);
                 default:
-                    return ComputeMerkelRoot(left) + ComputeMerkelRoot(right);
+                    return ComputeMerkleRoot(left) + ComputeMerkleRoot(right);
             }
         }
 
@@ -82,14 +83,11 @@ namespace Q.Models
             {
                 foreach (BlockDataBase blockData in Data)
                 {
-                    flatData += "\n" + blockData;
+                    flatData += $"\n{blockData},";
                 }
-            } else
-            {
-                flatData = "null";
             }
             flatData = $"[ {flatData}\n ]";
-            return $"{{ Timestamp:{Timestamp.Ticks} \"Version\":{Version} \"Nonce\":{(Nonce != null ? Nonce : "null")} \"Hash\":\"{Hash}\" \"MerkelRoot\":\"{MerkelRoot}\" \"Height\":{Height} \"Data\":{flatData} }}";
+            return $"{{ \"previousBlockHash\":\"{PreviousBlockHash}\", \"Timestamp\":{Timestamp.Ticks}, \"Version\":{Version}, \"Nonce\":{(Nonce != null ? $"\"{Nonce}\"" : "null")}, \"Hash\":\"{Hash}\", \"MerkleRoot\":{(Data != null ? $"\"{MerkleRoot}\"" : "null")}, \"Height\":{Height}, \"Data\":{(Data != null ? flatData : "null")} }}";
         }
     }
 }

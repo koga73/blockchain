@@ -22,7 +22,7 @@ namespace Q.Controllers
 
         static CommandController(){}
 
-        public static bool Execute(COMMANDS command)
+        /*public static bool Execute(COMMANDS command)
         {
             return Execute(command, null);
         }
@@ -48,9 +48,6 @@ namespace Q.Controllers
                 case COMMANDS.VIEW_CHAIN:
                     return DoViewChain();
 
-                case COMMANDS.REGISTER:
-                    return DoRegister(data);
-
                 case COMMANDS.POST_TRANSACTION:
                     return DoTransaction(data);
 
@@ -62,85 +59,80 @@ namespace Q.Controllers
             }
 
             return false;
-        }
+        }*/
 
-        private static bool DoNewChain()
+        public static bool NewChain()
         {
             BlockChain.Blocks = new List<Block>();
 
             //Genesis block
             Block genesis = new Block(){
+                PreviousBlockHash = Utils.ComputeHash("11/17/2021 - AJ Savino - Freedom of Speech"),
                 Height = 0
             };
-            BlockChain.Add(genesis);
+            BlockChain.Stage = genesis;
 
             Logger.Info("Created new BlockChain");
 
             return false;
         }
 
-        private static bool DoViewChain()
+        public static bool Register(BlockDataRegistration registrationData)
         {
-            Logger.Info(BlockChain.ToString());
-
-            return false;
-        }
-
-        private static bool DoRegister(dynamic data)
-        {
-            BlockDataBase registrationData = new BlockDataRegistration()
-            {
-                Alias = data.alias,
-                PublicKey = data.publicKey
-            };
-
             Logger.Info($"Added data: {registrationData}");
 
-            BlockChain.LastBlock.AddData(registrationData);
+            bool isValid = Crypto.Verify(Convert.FromBase64String(registrationData.PublicKey), registrationData.Hash, registrationData.Signature);
+            if (!isValid)
+            {
+                throw new Exception("Invalid registration signature");
+            }
+            BlockChain.Stage.AddData(registrationData);
 
             return false;
         }
 
-        private static bool DoTransaction(dynamic data)
+        public static bool Transaction(BlockDataTransaction transactionData)
         {
             return false;
         }
 
-        private static bool DoReference(dynamic data)
+        public static bool Reference(BlockDataReference referenceData)
         {
             return false;
         }
 
-        private static bool DoMine(dynamic data)
+        public static bool Mine(string seed)
         {
             Logger.Info($"Mining...");
 
-            Block lastBlock = BlockChain.LastBlock;
-            string desired = Enumerable.Repeat("0", lastBlock.Difficulty).Aggregate(string.Empty, (x, y) => x + y);
-            string current = data.seed;
+            Block stage = BlockChain.Stage;
+            string desired = Enumerable.Repeat("0", stage.Difficulty).Aggregate(string.Empty, (x, y) => x + y);
+            string current = seed;
             string nonce;
             do
             {
                 nonce = Utils.ComputeHash(current);
-                string hash = lastBlock.ComputeHash(nonce);
-                if (hash.Substring(0, lastBlock.Difficulty) == desired)
+                string hash = stage.ComputeHash(nonce);
+                if (hash.Substring(0, stage.Difficulty) == desired)
                 {
                     //Found block!
                     break;
                 }
                 current = nonce;
             } while (true);
-            lastBlock.Nonce = nonce;
+            stage.Nonce = nonce;
+            BlockChain.Commit();
 
             Logger.Info($"Mined block!");
 
             //Add new
             Block next = new Block()
             {
-                Height = lastBlock.Height + 1
+                PreviousBlockHash = stage.Hash,
+                Height = stage.Height + 1
                 //TODO: Adjust difficulty
             };
-            BlockChain.Add(next);
+            BlockChain.Stage = next;
 
             return false;
         }

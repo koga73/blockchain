@@ -1,9 +1,12 @@
-﻿using Q.Controllers;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
+using System.IO;
+using System.Linq;
 using System.Dynamic;
-using System.Diagnostics;
+using Newtonsoft.Json;
+
+using Q.Controllers;
 using Q.Common;
 using Q.Models;
 
@@ -11,17 +14,12 @@ namespace Q
 {
     class Program
     {
+        public static Dictionary<string, string> keys = new Dictionary<string, string>();
+        public static KeyPair keyPair;
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Commands");
-            Console.WriteLine("");
-            Console.WriteLine("  newchain");
-            Console.WriteLine("  viewchain");
-            Console.WriteLine("  register {ALIAS} {PUBLICKEY}");
-            Console.WriteLine("  transaction {AMOUNT} {FROM} {TO}");
-            Console.WriteLine("  post {FROM} {TO} {DESCRIPTION} {DATA}");
-            Console.WriteLine("  mine {SEED}");
-            Console.WriteLine("  exit");
+            WriteInfo();
             
             do
             {
@@ -30,28 +28,69 @@ namespace Q
                 if (input == "exit")
                 {
                     break;
-                } else
+                }
+                else if (input == "clear")
+                {
+                    WriteInfo();
+                }
+                else
                 {
                     try
                     {
-                        bool executionResult = parseInput(input);
+                        bool executionResult = ParseInput(input);
                     } catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        Console.WriteLine($"-- ERROR: {ex.Message}");
                     }
                 }
             } while (true);
         }
 
-        static bool parseInput(string input)
+        static void WriteInfo()
         {
-            Regex commandRegex = new Regex("^(newchain|viewchain|register|transaction|post|mine)");
+            Console.Clear();
+            Console.WriteLine("Q");
+            Console.WriteLine("Commands:");
+            Console.WriteLine("");
+            Console.WriteLine("  generatekeys");
+            Console.WriteLine("  savekeys {NAME}");
+            Console.WriteLine("  loadkeys");
+            Console.WriteLine("  setkeys {PRIVATEKEY} {PUBLICKEY}");
+            Console.WriteLine("");
+            Console.WriteLine("  newchain");
+            Console.WriteLine("  viewchain");
+            Console.WriteLine("  viewstage");
+            Console.WriteLine("");
+            Console.WriteLine("  register {ALIAS} {PUBLICKEY}");
+            Console.WriteLine("  transaction {AMOUNT} {FROM} {TO}");
+            Console.WriteLine("  post {FROM} {TO} {DESCRIPTION} {DATA}");
+            Console.WriteLine("");
+            Console.WriteLine("  mine {SEED}");
+            Console.WriteLine("");
+            Console.WriteLine("  clear");
+            Console.WriteLine("  exit");
+        }
+
+        static bool ParseInput(string input)
+        {
+            Regex commandRegex = new Regex("^(generatekeys|savekeys|loadkeys|setkeys|newchain|viewchain|viewstage|register|transaction|post|mine)");
+            
+            Regex generatekeysRegex = new Regex("^(generatekeys)$");
+            Regex savekeysRegex = new Regex("^(savekeys)\\s(.+)$");
+            Regex loadkeysRegex = new Regex("^(loadkeys)$");
+            Regex setkeysRegex = new Regex("^(setkeys)\\s(.+)\\s(.+)$");
+
             Regex newchainRegex = new Regex("^(newchain)$");
             Regex viewchainRegex = new Regex("^(viewchain)$");
+            Regex viewstageRegex = new Regex("^(viewstage)$");
+            
             Regex registerRegex = new Regex("^(register)\\s(.+?)\\s(.+?)$");
             Regex transactionRegex = new Regex("^(transaction)\\s([\\d.]+?)\\s(.+?)\\s(.+?)$");
             Regex postRegex = new Regex("^(post)\\s(.+?)\\s(.+?)\\s(\".+\"|.+?)\\s(\".+\"|.+?)$");
+            
             Regex mineRegex = new Regex("^(mine)\\s(.+)$");
+
+            string path = Directory.Exists("./keys") ? "./keys" : ".";
 
             string command = null;
             if (commandRegex.IsMatch(input))
@@ -60,19 +99,96 @@ namespace Q
             }
             switch (command)
             {
+                case "generatekeys":
+                    if (!generatekeysRegex.IsMatch(input))
+                    {
+                        throw new Exception("Invalid command syntax");
+                    }
+                    keyPair = Crypto.GenerateKeyPair();
+                    Console.WriteLine($"- Generated key pair");
+                    
+                    return false;
+
+                case "savekeys":
+                    if (!savekeysRegex.IsMatch(input))
+                    {
+                        throw new Exception("Invalid command syntax");
+                    }
+                    if (keyPair == null)
+                    {
+                        throw new Exception("No keys found, please generate keys first");
+                    }
+                    MatchCollection savekeysMatches = savekeysRegex.Matches(input);
+                    string keyName = savekeysMatches[0].Groups[2].ToString();
+                    dynamic keyObj = JsonConvert.DeserializeObject(keyPair.ToString());
+
+                    File.WriteAllLines($"{path}/{keyName}.private.pem", new string[]{ "-----BEGIN PRIVATE KEY-----", keyObj.privateKey, "-----END PRIVATE KEY-----" });
+                    Console.WriteLine($"- Wrote {path}/{keyName}.private.pem");
+                    File.WriteAllLines($"{path}/{keyName}.public.pem", new string[]{ "-----BEGIN PUBLIC KEY-----", keyObj.publicKey, "-----END PUBLIC KEY-----" });
+                    Console.WriteLine($"- Wrote {path}/{keyName}.public.pem");
+
+                    return false;
+
+                case "loadkeys":
+                    if (!loadkeysRegex.IsMatch(input))
+                    {
+                        throw new Exception("Invalid command syntax");
+                    }
+                    Regex fileNameRegex = new Regex("^.+[\\/\\\\](.+\\.pem)$");
+                    List<string> files = Directory.EnumerateFiles(path).ToList();
+                    foreach (string file in files)
+                    {
+                        if (fileNameRegex.IsMatch(file))
+                        {
+                            MatchCollection fileNameMatches = fileNameRegex.Matches(file);
+                            string fileName = fileNameMatches[0].Groups[1].ToString();
+                            
+                            string text = File.ReadAllText(file);
+                            text = Regex.Replace(text, "(--.+--)|[\\s]", "").Trim();
+                            keys.Add(fileName, text);
+
+                            Console.WriteLine($"- Loaded {fileName}");
+                        }
+                    }
+                    return false;
+
+                case "setkeys":
+                    if (!setkeysRegex.IsMatch(input))
+                    {
+                        throw new Exception("Invalid command syntax");
+                    }
+                    MatchCollection setkeysMatches = setkeysRegex.Matches(input);
+                    string privateKey = setkeysMatches[0].Groups[2].ToString();
+                    string privateKeyVal = keys[privateKey] ?? privateKey;
+                    string publicKey = setkeysMatches[0].Groups[3].ToString();
+                    string publicKeyVal = keys[publicKey] ?? publicKey;
+                    keyPair = KeyPair.Parse(privateKeyVal, publicKeyVal);
+                    Console.WriteLine($"- Key pair set");
+                    return false;
+
                 case "newchain":
                     if (!newchainRegex.IsMatch(input))
                     {
                         throw new Exception("Invalid command syntax");
                     }
-                    return CommandController.Execute(CommandController.COMMANDS.NEW_CHAIN);
+                    bool newchainResult = CommandController.NewChain();
+                    Console.WriteLine($"- Created new blockchain");
+                    return newchainResult;
 
                 case "viewchain":
                     if (!viewchainRegex.IsMatch(input))
                     {
                         throw new Exception("Invalid command syntax");
                     }
-                    Console.Write(BlockChain.ToString());
+                    Console.Write($"- Chain: {BlockChain.ToString()}");
+                    return false;
+
+                case "viewstage":
+                    if (!viewstageRegex.IsMatch(input))
+                    {
+                        throw new Exception("Invalid command syntax");
+                    }
+                    Console.Write($"- Stage: {BlockChain.Stage}");
                     return false;
 
                 case "register":
@@ -82,13 +198,20 @@ namespace Q
                     }
                     MatchCollection registerMatches = registerRegex.Matches(input);
                     string alias = registerMatches[0].Groups[2].ToString();
-                    string publicKey = registerMatches[0].Groups[3].ToString();
-                    
-                    dynamic registerData = new ExpandoObject();
-                    registerData.alias = alias;
-                    registerData.publicKey = publicKey;
-                    return CommandController.Execute(CommandController.COMMANDS.REGISTER, JsonConvert.SerializeObject(registerData));
-                    
+                    string registrationPublicKey = registerMatches[0].Groups[3].ToString();
+                    string registrationPublicKeyVal = keys[registrationPublicKey] ?? registrationPublicKey;
+
+                    //Create data object
+                    BlockDataRegistration registrationData = new BlockDataRegistration()
+                    {
+                        Alias = alias,
+                        PublicKey = registrationPublicKeyVal
+                    };
+                    registrationData.Signature = Crypto.Sign(keyPair.PrivateKey, registrationData.Hash);
+                    bool registrationResult = CommandController.Register(registrationData);
+                    Console.WriteLine($"- Registered user {alias}");
+                    return registrationResult;
+
                 case "transaction":
                     if (!transactionRegex.IsMatch(input))
                     {
@@ -102,8 +225,10 @@ namespace Q
                     dynamic transactionData= new ExpandoObject();
                     transactionData.amount = amount;
                     transactionData.from = payFrom;
-                    transactionData.to= payTo;
-                    return CommandController.Execute(CommandController.COMMANDS.POST_TRANSACTION, JsonConvert.SerializeObject(transactionData));
+                    transactionData.to = payTo;
+                    //bool transactionResult = CommandController.Transaction();
+                    Console.WriteLine($"- Created transaction");
+                    return false;//transactionResult;
 
                 case "post":
                     if (!postRegex.IsMatch(input))
@@ -121,7 +246,9 @@ namespace Q
                     postData.to = postTo;
                     postData.description = description;
                     postData.data = data;
-                    return CommandController.Execute(CommandController.COMMANDS.POST_REFERENCE, JsonConvert.SerializeObject(postData));
+                    //bool postResult = CommandController.Reference();
+                    Console.WriteLine($"- Posted data");
+                    return false;//postResult;
 
                 case "mine":
                     if (!mineRegex.IsMatch(input))
@@ -131,9 +258,9 @@ namespace Q
                     MatchCollection mineMatches = mineRegex.Matches(input);
                     string seed = mineMatches[0].Groups[2].ToString();
 
-                    dynamic mineData = new ExpandoObject();
-                    mineData.seed = seed;
-                    return CommandController.Execute(CommandController.COMMANDS.MINE, JsonConvert.SerializeObject(mineData));
+                    bool mineResult = CommandController.Mine(seed);
+                    Console.WriteLine($"- Mining complete");
+                    return mineResult;
 
                 default:
                     throw new Exception("Invalid command");

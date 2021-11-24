@@ -4,10 +4,8 @@ using System.Text;
 
 namespace Q.Models
 {
-    public class User
+    public class User : KeyPair
     {
         public string Alias;
-        public string PublicKey;
-        public string PrivateKey;
     }
 }

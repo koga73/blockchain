@@ -21,7 +21,7 @@ namespace Q.Models
 
         override public string ToString()
         {
-            return $"{{ \"Timestamp\":{Timestamp.Ticks} \"Hash\":\"{Hash}\" \"Amount\":{Amount} \"From\":\"{From}\" \"To\":\"{To}\" }}";
+            return $"{{ \"Timestamp\":{Timestamp.Ticks}, \"Hash\":\"{Hash}\", \"Amount\":{Amount}, \"From\":\"{From}\", \"To\":\"{To}\" }}";
         }
     }
 }
