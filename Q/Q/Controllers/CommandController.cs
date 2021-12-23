@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+
 using Q.Common;
 using Q.Models;
+using Q.Models.Data;
 
 namespace Q.Controllers
 {
@@ -67,7 +69,7 @@ namespace Q.Controllers
 
             //Genesis block
             Block genesis = new Block(){
-                PreviousBlockHash = Utils.ComputeHash("11/17/2021 - AJ Savino - Freedom of Speech"),
+                PreviousBlockHash = Crypto.ComputeHash("11/17/2021 - AJ Savino - Freedom of Speech"),
                 Height = 0
             };
             BlockChain.Stage = genesis;
@@ -111,7 +113,7 @@ namespace Q.Controllers
             string nonce;
             do
             {
-                nonce = Utils.ComputeHash(current);
+                nonce = Crypto.ComputeHash(current);
                 string hash = stage.ComputeHash(nonce);
                 if (hash.Substring(0, stage.Difficulty) == desired)
                 {

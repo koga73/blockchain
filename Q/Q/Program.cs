@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Q.Controllers;
 using Q.Common;
 using Q.Models;
+using Q.Models.Data;
 
 namespace Q
 {
@@ -264,7 +265,6 @@ namespace Q
 
                 default:
                     throw new Exception("Invalid command");
-
             }
         }
     }

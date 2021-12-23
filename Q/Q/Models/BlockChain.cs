@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
+using Q.Models.Data;
+
 namespace Q.Models
 {
     public static class BlockChain
     {
         public static Block Stage = null;
         public static List<Block> Blocks = new List<Block>();
+
+        //Cache
         public static Dictionary<string, User> Users = new Dictionary<string, User>();
+        public static List<TransactionOutput> Unspent = new List<TransactionOutput>();
 
         public static Block LastBlock {
             get {

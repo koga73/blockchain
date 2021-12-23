@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
+
 using Q.Common;
+using Q.Models.Data;
 
 namespace Q.Models
 {
@@ -43,7 +43,7 @@ namespace Q.Models
         public string ComputeHash(string nonce)
         {
             string state = $"{PreviousBlockHash}-{Timestamp.Ticks}-{Version}-{nonce}-{Height}-{MerkleRoot}";
-            return Utils.ComputeHash(Utils.ComputeHash(state)); //Double hash
+            return Crypto.ComputeHash(Crypto.ComputeHash(state)); //Double hash
         }
 
         public string ComputeMerkleRoot(List<BlockDataBase> data)
@@ -59,9 +59,9 @@ namespace Q.Models
             switch (dataLen)
             {
                 case 1:
-                    return Utils.ComputeHash(data[0].Hash + data[0].Hash);
+                    return Crypto.ComputeHash(data[0].Hash + data[0].Hash);
                 case 2:
-                    return Utils.ComputeHash(data[0].Hash + data[1].Hash);
+                    return Crypto.ComputeHash(data[0].Hash + data[1].Hash);
                 default:
                     return ComputeMerkleRoot(left) + ComputeMerkleRoot(right);
             }

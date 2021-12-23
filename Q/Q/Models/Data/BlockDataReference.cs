@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Q.Common;
 
-namespace Q.Models
+namespace Q.Models.Data
 {
     public class BlockDataReference : BlockDataBase
     {
@@ -16,7 +16,7 @@ namespace Q.Models
             get
             {
                 string state = $"{Timestamp.Ticks}-{From}-{To}-{DataHash}-{Description}";
-                return Utils.ComputeHash(state);
+                return Crypto.ComputeHash(state);
             }
         }
 

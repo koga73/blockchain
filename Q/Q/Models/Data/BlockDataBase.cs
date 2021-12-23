@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Q.Models
+namespace Q.Models.Data
 {
     public abstract class BlockDataBase
     {
