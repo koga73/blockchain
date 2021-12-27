@@ -1,0 +1,15 @@
+D:\workspace\git\blockchain\Q\Q.DB\bin\Release\net6.0\Q.DB.deps.json
+D:\workspace\git\blockchain\Q\Q.DB\bin\Release\net6.0\Q.DB.dll
+D:\workspace\git\blockchain\Q\Q.DB\bin\Release\net6.0\ref\Q.DB.dll
+D:\workspace\git\blockchain\Q\Q.DB\bin\Release\net6.0\Q.DB.pdb
+D:\workspace\git\blockchain\Q\Q.DB\bin\Release\net6.0\Q.Data.dll
+D:\workspace\git\blockchain\Q\Q.DB\bin\Release\net6.0\Q.Data.pdb
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.csproj.AssemblyReference.cache
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.GeneratedMSBuildEditorConfig.editorconfig
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.AssemblyInfoInputs.cache
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.AssemblyInfo.cs
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.csproj.CoreCompileInputs.cache
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.csproj.CopyComplete
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.dll
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\ref\Q.DB.dll
+D:\workspace\git\blockchain\Q\Q.DB\obj\Release\net6.0\Q.DB.pdb
