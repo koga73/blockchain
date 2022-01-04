@@ -201,7 +201,7 @@ namespace Q.Cli
                         throw new Exception("Invalid command syntax");
                     }
                     MatchCollection registerMatches = registerRegex.Matches(input);
-                    string alias = registerMatches[0].Groups[2].ToString();
+                    string alias = registerMatches[0].Groups[2].ToString().ToLower();
                     string registrationPublicKey = registerMatches[0].Groups[3].ToString();
                     string registrationPublicKeyVal = keys[registrationPublicKey] ?? registrationPublicKey;
 

@@ -12,17 +12,12 @@ namespace Q.Cli.Models
     public static class BlockChain
     {
         public static Block Stage = null;
-        public static List<Block> Blocks = new List<Block>();
-
-        //Cache
-        //public static Dictionary<string, User> Users = new Dictionary<string, User>();
-        //public static List<TransactionOutput> Unspent = new List<TransactionOutput>();
 
         public static Block LastBlock
         {
             get
             {
-                return Blocks[Blocks.Count - 1];
+                return BlockRepository.GetLastBlock();
             }
         }
 
@@ -34,21 +29,22 @@ namespace Q.Cli.Models
                 if (data is BlockDataRegistration)
                 {
                     BlockDataRegistration registrationData = (BlockDataRegistration)data;
-                    UserRepository.Add(new User(registrationData));
+                    UserRepository.Add(new User(registrationData), Stage);
                 }
             }
-            Blocks.Add(Stage);
+            BlockRepository.Add(Stage);
             Stage = null;
+        }
+
+        public static void Clear()
+        {
+            BlockRepository.Clear();
+            UserRepository.Clear();
         }
 
         public static string ToString()
         {
-            string output = "";
-            foreach (Block block in Blocks)
-            {
-                output += $"\n{block},";
-            }
-            return $"[ {output}\n ]";
+            return LastBlock.ToString();
         }
     }
 }

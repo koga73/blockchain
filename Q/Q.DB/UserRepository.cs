@@ -8,15 +8,25 @@ namespace Q.DB
 {
     public class UserRepository
     {
-        public static void Add(Data.Models.User user)
+        public static void Add(Data.Models.User user, Data.Models.Block blockReference)
         {
             using (Context db = new Context())
             {
                 db.Add(new DBO.User()
                 {
-                    Alias = user.Alias,
-                    PublicKey = user.PublicKeyString
+                    Alias = user.Alias.ToLower(),
+                    PublicKey = user.PublicKeyString,
+                    BlockHash = blockReference.Hash
                 });
+                db.SaveChanges();
+            }
+        }
+
+        public static void Clear()
+        {
+            using (Context db = new Context())
+            {
+                db.Users.RemoveRange(from row in db.Users select row);
                 db.SaveChanges();
             }
         }

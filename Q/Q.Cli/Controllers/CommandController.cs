@@ -26,7 +26,21 @@ namespace Q.Cli.Controllers
             MINE
         }
 
-        static CommandController() { }
+        static CommandController() {
+            Block lastBlock = BlockChain.LastBlock;
+            if (lastBlock != null)
+            {
+                //Add new
+                Block next = new Block()
+                {
+                    //TODO: Fix bug with previous block hash not lineing up
+                    PreviousBlockHash = lastBlock.Hash,
+                    Height = lastBlock.Height + 1
+                    //TODO: Adjust difficulty
+                };
+                BlockChain.Stage = next;
+            }
+        }
 
         /*public static bool Execute(COMMANDS command)
         {
@@ -69,7 +83,7 @@ namespace Q.Cli.Controllers
 
         public static bool NewChain()
         {
-            BlockChain.Blocks = new List<Block>();
+            BlockChain.Clear();
 
             //Genesis block
             Block genesis = new Block()

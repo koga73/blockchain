@@ -14,5 +14,9 @@ namespace Q.DB.DBO
         [Required]
         [MaxLength(64)]
         public string Alias { get; set; }
+
+        [Required]
+        [MaxLength(64)]
+        public string BlockHash { get; set; }
     }
 }

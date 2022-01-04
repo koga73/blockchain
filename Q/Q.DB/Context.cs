@@ -9,6 +9,9 @@ namespace Q.DB
     {
         public string DbPath { get; set; }
 
+        public DbSet<DBO.User> Users { get; set; }
+        public DbSet<DBO.Block> Blocks { get; set; }
+
         public Context()
         {
             DbPath = "./Q.db";
@@ -25,11 +28,6 @@ namespace Q.DB
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseSqlite($"Data Source={DbPath}");
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<DBO.User>().ToTable("User");
         }
     }
 }
