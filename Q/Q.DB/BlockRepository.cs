@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Q.Data.Models.Struct;
+
 namespace Q.DB
 {
     public class BlockRepository
@@ -24,6 +26,17 @@ namespace Q.DB
                     Difficulty = block.Difficulty
                 });
                 db.SaveChanges();
+            }
+
+            //Store users
+            for (int i = 0; i < block.Data.Count; i++)
+            {
+                BlockDataBase blockData = block.Data[i];
+                if (blockData is BlockDataRegistration)
+                {
+                    BlockDataRegistration registrationData = (BlockDataRegistration)blockData;
+                    UserRepository.Add(registrationData, i, block.Hash);
+                }
             }
         }
 
@@ -74,10 +87,25 @@ namespace Q.DB
                     Version = block.Version,
                     Nonce = block.Nonce,
                     Height = block.Height,
-                    Difficulty = block.Difficulty
+                    Difficulty = block.Difficulty,
+                    Data = GetBlockData(block)
                 };
             }
             return null;
+        }
+
+        private static List<BlockDataBase> GetBlockData(DBO.Block block)
+        {
+            using (Context db = new Context())
+            {
+                var users = from user in db.Users where user.BlockHash == block.Hash orderby user.DataIndex select user;
+                return users.Select(user => new BlockDataRegistration()
+                {
+                    PublicKey = user.PublicKey,
+                    Alias = user.Alias,
+                    Timestamp = user.Timestamp
+                }).ToList<BlockDataBase>();
+            }
         }
     }
 }

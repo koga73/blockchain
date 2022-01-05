@@ -8,15 +8,17 @@ namespace Q.DB
 {
     public class UserRepository
     {
-        public static void Add(Data.Models.User user, Data.Models.Block blockReference)
+        public static void Add(Data.Models.Struct.BlockDataRegistration user, int dataIndex, string blockHash)
         {
             using (Context db = new Context())
             {
                 db.Add(new DBO.User()
                 {
                     Alias = user.Alias.ToLower(),
-                    PublicKey = user.PublicKeyString,
-                    BlockHash = blockReference.Hash
+                    PublicKey = user.PublicKey,
+                    Timestamp = user.Timestamp,
+                    DataIndex = dataIndex,
+                    BlockHash = blockHash
                 });
                 db.SaveChanges();
             }

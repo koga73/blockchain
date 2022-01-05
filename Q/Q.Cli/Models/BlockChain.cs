@@ -23,15 +23,6 @@ namespace Q.Cli.Models
 
         public static void Commit()
         {
-            //Store users and unspent transactions in memory
-            foreach (BlockDataBase data in Stage.Data)
-            {
-                if (data is BlockDataRegistration)
-                {
-                    BlockDataRegistration registrationData = (BlockDataRegistration)data;
-                    UserRepository.Add(new User(registrationData), Stage);
-                }
-            }
             BlockRepository.Add(Stage);
             Stage = null;
         }
