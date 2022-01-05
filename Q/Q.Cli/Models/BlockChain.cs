@@ -30,7 +30,6 @@ namespace Q.Cli.Models
         public static void Clear()
         {
             BlockRepository.Clear();
-            UserRepository.Clear();
         }
 
         public static string ToString()

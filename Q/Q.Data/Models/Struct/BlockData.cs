@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Q.Data.Models.Struct
 {
-    public abstract class BlockDataBase
+    public abstract class BlockData
     {
         public DateTime Timestamp;
         public abstract string Hash { get; }
         public string Signature;
 
-        public BlockDataBase()
+        public BlockData()
         {
             Timestamp = DateTime.Now;
         }

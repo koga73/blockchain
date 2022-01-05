@@ -5,7 +5,7 @@ using Q.Data.Common;
 
 namespace Q.Data.Models.Struct
 {
-    public class BlockDataRegistration : BlockDataBase
+    public class BlockDataRegistration : BlockData
     {
         public string Alias;
         public string PublicKey;

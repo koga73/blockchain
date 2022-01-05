@@ -17,7 +17,7 @@ namespace Q.Data.Models
         public string Nonce;
         public int Height;
         public int Difficulty = MIN_DIFFICULTY;
-        public List<BlockDataBase> Data;
+        public List<BlockData> Data;
 
         public string Hash
         {
@@ -46,7 +46,7 @@ namespace Q.Data.Models
             return Crypto.ComputeHash(Crypto.ComputeHash(state)); //Double hash
         }
 
-        public string ComputeMerkleRoot(List<BlockDataBase> data)
+        public string ComputeMerkleRoot(List<BlockData> data)
         {
             if (data == null)
             {
@@ -54,8 +54,8 @@ namespace Q.Data.Models
             }
             int dataLen = data.Count;
             int halfLen = (int)Math.Floor(dataLen / 2.0);
-            List<BlockDataBase> left = data.GetRange(0, halfLen);
-            List<BlockDataBase> right = data.GetRange(halfLen, dataLen - halfLen);
+            List<BlockData> left = data.GetRange(0, halfLen);
+            List<BlockData> right = data.GetRange(halfLen, dataLen - halfLen);
             switch (dataLen)
             {
                 case 1:
@@ -67,11 +67,11 @@ namespace Q.Data.Models
             }
         }
 
-        public void AddData(BlockDataBase data)
+        public void AddData(BlockData data)
         {
             if (Data == null)
             {
-                Data = new List<BlockDataBase>();
+                Data = new List<BlockData>();
             }
             Data.Add(data);
         }
@@ -81,7 +81,7 @@ namespace Q.Data.Models
             string flatData = "";
             if (Data != null)
             {
-                foreach (BlockDataBase blockData in Data)
+                foreach (BlockData blockData in Data)
                 {
                     flatData += $"\n{blockData},";
                 }

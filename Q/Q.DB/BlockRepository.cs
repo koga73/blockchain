@@ -28,14 +28,22 @@ namespace Q.DB
                 db.SaveChanges();
             }
 
-            //Store users
+            //Store block data
             for (int i = 0; i < block.Data.Count; i++)
             {
-                BlockDataBase blockData = block.Data[i];
+                BlockData blockData = block.Data[i];
+                
+                //Users
                 if (blockData is BlockDataRegistration)
                 {
                     BlockDataRegistration registrationData = (BlockDataRegistration)blockData;
                     UserRepository.Add(registrationData, i, block.Hash);
+                }
+                //Transactions
+                else if (blockData is BlockDataTransaction)
+                {
+                    BlockDataTransaction transactionData = (BlockDataTransaction)blockData;
+                    TransactionRepository.Add(transactionData, i, block.Hash);
                 }
             }
         }
@@ -69,6 +77,9 @@ namespace Q.DB
 
         public static void Clear()
         {
+            UserRepository.Clear();
+            TransactionRepository.Clear();
+
             using (Context db = new Context())
             {
                 db.Blocks.RemoveRange(from row in db.Blocks select row);
@@ -94,7 +105,7 @@ namespace Q.DB
             return null;
         }
 
-        private static List<BlockDataBase> GetBlockData(DBO.Block block)
+        private static List<BlockData> GetBlockData(DBO.Block block)
         {
             using (Context db = new Context())
             {
@@ -104,7 +115,7 @@ namespace Q.DB
                     PublicKey = user.PublicKey,
                     Alias = user.Alias,
                     Timestamp = user.Timestamp
-                }).ToList<BlockDataBase>();
+                }).ToList<BlockData>();
             }
         }
     }

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Q.DB.DBO.Struct;
 
 namespace Q.DB.DBO
 {
-    internal class User
+    internal class User : BlockData
     {
         [Key]
         [MaxLength(128)]
@@ -14,15 +13,5 @@ namespace Q.DB.DBO
         [Required]
         [MaxLength(64)]
         public string Alias { get; set; }
-
-        [Required]
-        public int DataIndex { get; set; }
-
-        [Required]
-        [MaxLength(64)]
-        public string BlockHash { get; set; }
-
-        [Required]
-        public DateTime Timestamp { get; set; }
     }
 }

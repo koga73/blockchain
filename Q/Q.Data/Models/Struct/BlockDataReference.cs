@@ -5,7 +5,7 @@ using Q.Data.Common;
 
 namespace Q.Data.Models.Struct
 {
-    public class BlockDataReference : BlockDataBase
+    public class BlockDataReference : BlockData
     {
         public string From;
         public string To;
