@@ -16,6 +16,8 @@ namespace Q.Cli.Controllers
 {
     public class CommandController
     {
+        private static int COINBASE_AMT = 256; //TODO: Make dynamic with halfing
+
         public enum COMMANDS
         {
             NEW_CHAIN,
@@ -107,7 +109,7 @@ namespace Q.Cli.Controllers
             {
                 throw new Exception("Invalid registration signature");
             }
-            BlockChain.Stage.AddData(registrationData);
+            BlockChain.Stage.Data.Add(registrationData);
 
             return false;
         }
@@ -124,14 +126,22 @@ namespace Q.Cli.Controllers
             return false;
         }
 
-        public static bool Mine(string seed)
+        public static bool Mine(string seed, string address)
         {
-            Logger.Info($"Mining...");
+            BlockDataTransaction coinbase = new BlockDataTransaction();
+            coinbase.TxOut.Add(new TransactionOutput()
+            {
+                Address = address,
+                Amount = COINBASE_AMT
+            });
 
             Block stage = BlockChain.Stage;
+            stage.Data.Insert(0, coinbase);
             string desired = Enumerable.Repeat("0", stage.Difficulty).Aggregate(string.Empty, (x, y) => x + y);
             string current = seed;
             string nonce;
+
+            Logger.Info($"Mining...");
             do
             {
                 nonce = Crypto.ComputeHash(current);

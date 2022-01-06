@@ -69,7 +69,7 @@ namespace Q.Cli
             Console.WriteLine("  transaction {AMOUNT} {FROM} {TO}");
             Console.WriteLine("  post {FROM} {TO} {DESCRIPTION} {DATA}");
             Console.WriteLine("");
-            Console.WriteLine("  mine {SEED}");
+            Console.WriteLine("  mine {SEED} {PUBLICKEY}");
             Console.WriteLine("");
             Console.WriteLine("  clear");
             Console.WriteLine("  exit");
@@ -92,7 +92,7 @@ namespace Q.Cli
             Regex transactionRegex = new Regex("^(transaction)\\s([\\d.]+?)\\s(.+?)\\s(.+?)$");
             Regex postRegex = new Regex("^(post)\\s(.+?)\\s(.+?)\\s(\".+\"|.+?)\\s(\".+\"|.+?)$");
 
-            Regex mineRegex = new Regex("^(mine)\\s(.+)$");
+            Regex mineRegex = new Regex("^(mine)\\s(.+)\\s(.+)$");
 
             string path = Directory.Exists("./keys") ? "./keys" : ".";
 
@@ -261,8 +261,10 @@ namespace Q.Cli
                     }
                     MatchCollection mineMatches = mineRegex.Matches(input);
                     string seed = mineMatches[0].Groups[2].ToString();
+                    string minePublicKey = mineMatches[0].Groups[3].ToString();
+                    string minePublicKeyVal = keys[minePublicKey] ?? minePublicKey;
 
-                    bool mineResult = CommandController.Mine(seed);
+                    bool mineResult = CommandController.Mine(seed, minePublicKeyVal);
                     Console.WriteLine($"- Mining complete");
                     return mineResult;
 

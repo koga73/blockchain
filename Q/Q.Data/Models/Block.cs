@@ -17,7 +17,7 @@ namespace Q.Data.Models
         public string Nonce;
         public int Height;
         public int Difficulty = MIN_DIFFICULTY;
-        public List<BlockData> Data;
+        public List<BlockData> Data = new List<BlockData>();
 
         public string Hash
         {
@@ -53,6 +53,10 @@ namespace Q.Data.Models
                 return null;
             }
             int dataLen = data.Count;
+            if (dataLen == 0)
+            {
+                return null;
+            }
             int halfLen = (int)Math.Floor(dataLen / 2.0);
             List<BlockData> left = data.GetRange(0, halfLen);
             List<BlockData> right = data.GetRange(halfLen, dataLen - halfLen);
@@ -65,15 +69,6 @@ namespace Q.Data.Models
                 default:
                     return ComputeMerkleRoot(left) + ComputeMerkleRoot(right);
             }
-        }
-
-        public void AddData(BlockData data)
-        {
-            if (Data == null)
-            {
-                Data = new List<BlockData>();
-            }
-            Data.Add(data);
         }
 
         override public string ToString()

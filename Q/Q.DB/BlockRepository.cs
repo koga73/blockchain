@@ -109,13 +109,42 @@ namespace Q.DB
         {
             using (Context db = new Context())
             {
+                Dictionary<int, BlockData> data = new Dictionary<int, BlockData>();
+
+                //Users
                 var users = from user in db.Users where user.BlockHash == block.Hash orderby user.DataIndex select user;
-                return users.Select(user => new BlockDataRegistration()
+                foreach (var user in users)
                 {
-                    PublicKey = user.PublicKey,
-                    Alias = user.Alias,
-                    Timestamp = user.Timestamp
-                }).ToList<BlockData>();
+                    data.Add(user.DataIndex, new BlockDataRegistration()
+                    {
+                        PublicKey = user.PublicKey,
+                        Alias = user.Alias,
+                        Timestamp = user.Timestamp
+                    });
+                }
+
+                //Transactions
+                var transactions = from tx in db.Transactions where tx.BlockHash == block.Hash orderby tx.DataIndex select tx;
+                foreach (var tx in transactions)
+                {
+                    data.Add(tx.DataIndex, new BlockDataTransaction()
+                    {
+                        Timestamp = tx.Timestamp,
+                        TxIn = (from txi in db.TransactionInputs where txi.OfTransaction == tx.Hash select txi).Select(txi => new TransactionInput()
+                        {
+                            TransactionHash = txi.TransactionHash,
+                            OutputIndex = txi.OutputIndex
+                        }).ToList<TransactionInput>(),
+                        TxOut = (from txo in db.TransactionOutputs where txo.OfTransaction == tx.Hash select txo).Select(txo => new TransactionOutput()
+                        {
+                            Address = txo.Address,
+                            Amount = txo.Amount
+                        }).ToList<TransactionOutput>()
+                    });
+                }
+
+                var d = (from entry in data orderby entry.Key ascending select entry.Value).ToList<BlockData>();
+                return d;
             }
         }
     }

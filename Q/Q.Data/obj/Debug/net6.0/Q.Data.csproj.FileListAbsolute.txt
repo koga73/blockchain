@@ -9,3 +9,4 @@ D:\workspace\git\blockchain\Q\Q.Data\obj\Debug\net6.0\Q.Data.csproj.CoreCompileI
 D:\workspace\git\blockchain\Q\Q.Data\obj\Debug\net6.0\Q.Data.dll
 D:\workspace\git\blockchain\Q\Q.Data\obj\Debug\net6.0\ref\Q.Data.dll
 D:\workspace\git\blockchain\Q\Q.Data\obj\Debug\net6.0\Q.Data.pdb
+D:\workspace\git\blockchain\Q\Q.Data\obj\Debug\net6.0\Q.Data.csproj.AssemblyReference.cache
