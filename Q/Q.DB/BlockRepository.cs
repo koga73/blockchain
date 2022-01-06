@@ -130,12 +130,16 @@ namespace Q.DB
                     data.Add(tx.DataIndex, new BlockDataTransaction()
                     {
                         Timestamp = tx.Timestamp,
-                        TxIn = (from txi in db.TransactionInputs where txi.OfTransaction == tx.Hash select txi).Select(txi => new TransactionInput()
+                        
+                        //Inputs
+                        TxIn = (from txi in db.TransactionInputs where txi.OfTransaction == tx.Hash orderby txi.Index select txi).Select(txi => new TransactionInput()
                         {
                             TransactionHash = txi.TransactionHash,
                             OutputIndex = txi.OutputIndex
                         }).ToList<TransactionInput>(),
-                        TxOut = (from txo in db.TransactionOutputs where txo.OfTransaction == tx.Hash select txo).Select(txo => new TransactionOutput()
+                        
+                        //Outputs
+                        TxOut = (from txo in db.TransactionOutputs where txo.OfTransaction == tx.Hash orderby txo.Index select txo).Select(txo => new TransactionOutput()
                         {
                             Address = txo.Address,
                             Amount = txo.Amount
@@ -143,8 +147,8 @@ namespace Q.DB
                     });
                 }
 
-                var d = (from entry in data orderby entry.Key ascending select entry.Value).ToList<BlockData>();
-                return d;
+                //Return sorted data
+                return (from entry in data orderby entry.Key ascending select entry.Value).ToList<BlockData>();
             }
         }
     }

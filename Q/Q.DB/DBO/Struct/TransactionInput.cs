@@ -17,6 +17,9 @@ namespace Q.DB.DBO.Struct
         public string TransactionHash { get; set; }
 
         [Required]
+        public int Index { get; set; }
+
+        [Required]
         public int OutputIndex { get; set; }
     }
 }

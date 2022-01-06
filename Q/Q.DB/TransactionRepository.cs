@@ -22,24 +22,28 @@ namespace Q.DB
                 });
 
                 //Add inputs
-                foreach (Data.Models.Struct.TransactionInput input in transaction.TxIn)
+                for (int i = 0; i < transaction.TxIn.Count; i++)
                 {
+                    Data.Models.Struct.TransactionInput input = transaction.TxIn[i];
                     db.Add(new DBO.Struct.TransactionInput()
                     {
                         OfTransaction = transaction.Hash,
                         TransactionHash = input.TransactionHash,
-                        OutputIndex = input.OutputIndex
+                        OutputIndex = input.OutputIndex,
+                        Index = i
                     });
                 }
 
                 //Add outputs
-                foreach (Data.Models.Struct.TransactionOutput output in transaction.TxOut)
+                for (int i = 0; i < transaction.TxOut.Count; i++)
                 {
+                    Data.Models.Struct.TransactionOutput output = transaction.TxOut[i];
                     db.Add(new DBO.Struct.TransactionOutput()
                     {
                         OfTransaction = transaction.Hash,
                         Address = output.Address,
-                        Amount = output.Amount
+                        Amount = output.Amount,
+                        Index = i
                     });
                 }
 

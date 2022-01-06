@@ -18,5 +18,8 @@ namespace Q.DB.DBO.Struct
 
         [Required]
         public float Amount { get; set; }
+
+        [Required]
+        public int Index { get; set; }
     }
 }
