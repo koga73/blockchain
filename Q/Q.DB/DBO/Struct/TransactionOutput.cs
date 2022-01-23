@@ -21,5 +21,8 @@ namespace Q.DB.DBO.Struct
 
         [Required]
         public int Index { get; set; }
+
+        [Required]
+        public bool IsSpent { get; set; }
     }
 }

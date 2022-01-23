@@ -1,0 +1,81 @@
+@import "reset";
+@import "colors";
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	font-family: "Zilla Slab", arial, sans-serif;
+	background-color: $color-primary-0;
+	color: $color-secondary-1-4;
+}
+
+a {
+	color: $color-secondary-1-4;
+}
+
+label {
+	cursor: pointer;
+	margin: 2px;
+	display: block;
+	width: 100%;
+}
+
+select {
+	background-color: $color-secondary-2-1;
+	padding: 8px;
+	border-radius: 8px;
+	cursor: pointer;
+
+	&:focus {
+		border-radius: 0;
+	}
+
+	option {
+		padding: 8px;
+	}
+}
+
+.select-wrap {
+	text-align: left;
+}
+
+h1 {
+	font-size: 3em;
+}
+
+p {
+	margin: 8px 0;
+}
+
+#page {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+header {
+	display: flex;
+	flex-direction: row;
+
+	h1 {
+		align-self: flex-end;
+	}
+
+	.select-wrap {
+		margin: 0 0 0 auto;
+	}
+}
+
+main {
+	flex: 1;
+}
+
+.wrap {
+	width: 100%;
+	max-width: 1440px;
+	margin: auto;
+	text-align: center;
+}

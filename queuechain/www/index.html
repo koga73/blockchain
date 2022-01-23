@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Queuechain</title>
+
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+		<meta name="theme-color" content="#5e9732" />
+		<meta name="msapplication-navbutton-color" content="#5e9732" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="#5e9732" />
+
+		<meta name="description" content="Queuechain" />
+
+		<!-- TODO: Don't use CDN, move files locally -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Zilla+Slab" />
+		<link rel="stylesheet" href="css/styles.css" type="text/css" />
+
+		<script type="module">
+			import Vue from "https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.esm.browser.js";
+		</script>
+	</head>
+	<body>
+		<div id="page">
+			<header class="wrap">
+				<h1>Queuechain</h1>
+				<div class="select-wrap">
+					<label>Account:</label>
+					<select>
+						<option selected disabled>Select an account</option>
+						<option value="new">Create new account</option>
+						<option value="manage">Manage accounts</option>
+					</select>
+				</div>
+			</header>
+			<main class="wrap">
+				<section></section>
+			</main>
+			<footer class="wrap">
+				<p>&copy; Copyright 2022 Savino Systems LLC</p>
+				<p><a href="mailto:info@savino.systems">info@savino.systems</a></p>
+			</footer>
+		</div>
+	</body>
+</html>
