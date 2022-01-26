@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Q.Chain\Q.Chain.csproj" />
     <ProjectReference Include="..\Q.Data\Q.Data.csproj" />
     <ProjectReference Include="..\Q.DB\Q.DB.csproj" />
   </ItemGroup>

@@ -1,3 +1,6 @@
+using Q.Chain.Models;
+using Q.Chain.Controllers;
+
 public class Program
 {
     public static void Main(string[] args)
@@ -5,7 +8,6 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -22,11 +24,14 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
         app.MapControllers();
-
         app.Run();
+
+        //Create new chain if does not exist
+        if (BlockChain.LastBlock == null)
+        {
+            CommandController.NewChain();
+        }
     }
 }

@@ -7,8 +7,8 @@ using System.Dynamic;
 
 using Newtonsoft.Json;
 
-using Q.Cli.Controllers;
-using Q.Cli.Models;
+using Q.Chain.Controllers;
+using Q.Chain.Models;
 using Q.Data.Common;
 using Q.Data.Models;
 using Q.Data.Models.Struct;
@@ -23,6 +23,12 @@ namespace Q.Cli
         static void Main(string[] args)
         {
             WriteInfo();
+
+            //Create new chain if does not exist
+            if (BlockChain.LastBlock == null)
+            {
+                CommandController.NewChain();
+            }
 
             do
             {
@@ -73,6 +79,7 @@ namespace Q.Cli
             Console.WriteLine("");
             Console.WriteLine("  clear");
             Console.WriteLine("  exit");
+            Console.WriteLine("");
         }
 
         static bool ParseInput(string input)
@@ -94,7 +101,7 @@ namespace Q.Cli
 
             Regex mineRegex = new Regex("^(mine)\\s(.+)\\s(.+)$");
 
-            string path = Directory.Exists("./keys") ? "./keys" : ".";
+            string path = Paths.KeysPath;
 
             string command = null;
             if (commandRegex.IsMatch(input))

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Q.Cli.Common
+namespace Q.Data.Common
 {
     public class Logger
     {

@@ -52,3 +52,5 @@ D:\workspace\git\blockchain\Q\Q.Cli\obj\Debug\net6.0\Q.Cli.dll
 D:\workspace\git\blockchain\Q\Q.Cli\obj\Debug\net6.0\ref\Q.Cli.dll
 D:\workspace\git\blockchain\Q\Q.Cli\obj\Debug\net6.0\Q.Cli.pdb
 D:\workspace\git\blockchain\Q\Q.Cli\obj\Debug\net6.0\Q.Cli.genruntimeconfig.cache
+D:\workspace\git\blockchain\Q\Q.Cli\bin\Debug\net6.0\Q.Chain.dll
+D:\workspace\git\blockchain\Q\Q.Cli\bin\Debug\net6.0\Q.Chain.pdb

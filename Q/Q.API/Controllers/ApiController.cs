@@ -24,5 +24,15 @@ namespace Q.API.Controllers
                 Data = "OK"
             };
         }
+
+        [HttpPost("[action]")]
+        public ApiResponse RegisterUser()
+        {
+            return new ApiResponse()
+            {
+                Success = true,
+                Data = "OK"
+            };
+        }
     }
 }

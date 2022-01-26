@@ -8,14 +8,14 @@ namespace Q.Wallet
 {
     public class WalletRepository
     {
-        public static void Add(string publicKey, string alias = null, string name = null)
+        public static void Add(string publicKey, string? alias = null, string? name = null)
         {
             using (Context db = new Context())
             {
                 db.Add(new DBO.Wallet()
                 {
                     PublicKey = publicKey,
-                    Alias = alias,
+                    Alias = !String.IsNullOrEmpty(alias) ? alias : null,
                     Name = !String.IsNullOrEmpty(name) ? name : !String.IsNullOrEmpty(alias) ? alias : "default",
                     Balance = 0,
                 });

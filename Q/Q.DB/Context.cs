@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+
+using Q.Data.Common;
 
 namespace Q.DB
 {
     internal class Context : DbContext
     {
+        const string DB_FILE_NAME = "Q.db";
+
         public string DbPath { get; set; }
 
         public DbSet<DBO.User> Users { get; set; }
@@ -17,14 +22,21 @@ namespace Q.DB
 
         public Context()
         {
-            DbPath = "./Q.db";
+            DbPath = Path.Join(Paths.ApplicationPath, DB_FILE_NAME);
         }
 
         static Context()
         {
             using (Context ctx = new Context())
             {
-                ctx.Database.EnsureCreated();
+                try
+                {
+                    ctx.Database.EnsureCreated();
+                } catch (Exception ex)
+                {
+                    Logger.Info(ex.Message);
+                    Environment.Exit(1);
+                }
             }
         }
 

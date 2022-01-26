@@ -445,6 +445,21 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
+      "Q.Chain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1",
+          "Q.DB": "1.0.0",
+          "Q.Data": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Q.Chain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Q.Chain.dll": {}
+        }
+      },
       "Q.Data/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
@@ -1125,6 +1140,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Q.Chain/1.0.0": {
+      "type": "project",
+      "path": "../Q.Chain/Q.Chain.csproj",
+      "msbuildProject": "../Q.Chain/Q.Chain.csproj"
+    },
     "Q.Data/1.0.0": {
       "type": "project",
       "path": "../Q.Data/Q.Data.csproj",
@@ -1139,6 +1159,7 @@
   "projectFileDependencyGroups": {
     "net6.0": [
       "Newtonsoft.Json >= 13.0.1",
+      "Q.Chain >= 1.0.0",
       "Q.DB >= 1.0.0",
       "Q.Data >= 1.0.0"
     ]
@@ -1170,6 +1191,9 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
+            "D:\\workspace\\git\\blockchain\\Q\\Q.Chain\\Q.Chain.csproj": {
+              "projectPath": "D:\\workspace\\git\\blockchain\\Q\\Q.Chain\\Q.Chain.csproj"
+            },
             "D:\\workspace\\git\\blockchain\\Q\\Q.Data\\Q.Data.csproj": {
               "projectPath": "D:\\workspace\\git\\blockchain\\Q\\Q.Data\\Q.Data.csproj"
             },
