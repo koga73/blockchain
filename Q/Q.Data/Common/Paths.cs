@@ -2,7 +2,7 @@
 {
     public class Paths
     {
-        const string APP_DIR = "q";
+        const string APP_DIR = "Q";
         const string KEYS_DIR = "keys";
 
         public static string ApplicationPath {

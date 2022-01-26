@@ -9,6 +9,7 @@ namespace Q.Data.Models.Struct
     {
         public string Alias;
         public string PublicKey;
+
         override public string Hash
         {
             get
