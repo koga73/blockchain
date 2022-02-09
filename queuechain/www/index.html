@@ -14,6 +14,12 @@
 
 		<!-- TODO: Don't use CDN, move files locally -->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Zilla+Slab" />
+		<link
+			href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+			integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+			crossorigin="anonymous"
+			rel="stylesheet"
+		/>
 		<link rel="stylesheet" href="css/styles.css" type="text/css" />
 
 		<script type="module">
@@ -24,6 +30,18 @@
 		<div id="page">
 			<header class="wrap">
 				<h1>Queuechain</h1>
+				<h2>{test}</h2>
+
+				<ul>
+					<li>
+						<a href="#users"><i class="fas fa-users"></i></a>
+					</li>
+					<li>
+						<a href="#settings"><i class="fas fa-cog"></i></a>
+					</li>
+				</ul>
+
+				<!--
 				<div class="select-wrap">
 					<label>Account:</label>
 					<select>
@@ -32,14 +50,30 @@
 						<option value="manage">Manage accounts</option>
 					</select>
 				</div>
+				-->
 			</header>
 			<main class="wrap">
-				<section></section>
+				<!-- MESSAGES -->
+				<section id="messages">
+					<h2>Messages</h2>
+				</section>
+
+				<!-- USERS -->
+				<section id="users">
+					<h2>Users</h2>
+				</section>
+
+				<!-- SETTINGS -->
+				<section id="settings">
+					<h2>Settings</h2>
+				</section>
 			</main>
 			<footer class="wrap">
 				<p>&copy; Copyright 2022 Savino Systems LLC</p>
 				<p><a href="mailto:info@savino.systems">info@savino.systems</a></p>
 			</footer>
 		</div>
+
+		<script type="module" src="./js/index.js"></script>
 	</body>
 </html>

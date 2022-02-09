@@ -18,7 +18,8 @@ namespace Q.DB
                     Hash = transaction.Hash,
                     Timestamp = transaction.Timestamp,
                     DataIndex = dataIndex,
-                    BlockHash = blockHash
+                    BlockHash = blockHash,
+                    Signature = transaction.Signature
                 });
 
                 //Add inputs

@@ -71,11 +71,11 @@ namespace Q.Cli
             Console.WriteLine("  viewchain");
             Console.WriteLine("  viewstage");
             Console.WriteLine("");
-            Console.WriteLine("  register {ALIAS} {PUBLICKEY}");
+            Console.WriteLine("  register {ALIAS}");
             Console.WriteLine("  transaction {AMOUNT} {FROM} {TO}");
             Console.WriteLine("  post {FROM} {TO} {DESCRIPTION} {DATA}");
             Console.WriteLine("");
-            Console.WriteLine("  mine {SEED} {PUBLICKEY}");
+            Console.WriteLine("  mine {SEED}");
             Console.WriteLine("");
             Console.WriteLine("  clear");
             Console.WriteLine("  exit");
@@ -95,11 +95,11 @@ namespace Q.Cli
             Regex viewchainRegex = new Regex("^(viewchain)$");
             Regex viewstageRegex = new Regex("^(viewstage)$");
 
-            Regex registerRegex = new Regex("^(register)\\s(.+?)\\s(.+?)$");
+            Regex registerRegex = new Regex("^(register)\\s(.+?)$");
             Regex transactionRegex = new Regex("^(transaction)\\s([\\d.]+?)\\s(.+?)\\s(.+?)$");
             Regex postRegex = new Regex("^(post)\\s(.+?)\\s(.+?)\\s(\".+\"|.+?)\\s(\".+\"|.+?)$");
 
-            Regex mineRegex = new Regex("^(mine)\\s(.+)\\s(.+)$");
+            Regex mineRegex = new Regex("^(mine)\\s(.+)$");
 
             string path = Paths.KeysPath;
 
@@ -209,14 +209,12 @@ namespace Q.Cli
                     }
                     MatchCollection registerMatches = registerRegex.Matches(input);
                     string alias = registerMatches[0].Groups[2].ToString().ToLower();
-                    string registrationPublicKey = registerMatches[0].Groups[3].ToString();
-                    string registrationPublicKeyVal = keys[registrationPublicKey] ?? registrationPublicKey;
 
                     //Create data object
                     BlockDataRegistration registrationData = new BlockDataRegistration()
                     {
                         Alias = alias,
-                        PublicKey = registrationPublicKeyVal
+                        PublicKey = keyPair.PublicKeyString
                     };
                     registrationData.Signature = Crypto.Sign(keyPair.PrivateKey, registrationData.Hash);
                     bool registrationResult = CommandController.Register(registrationData);
@@ -268,10 +266,21 @@ namespace Q.Cli
                     }
                     MatchCollection mineMatches = mineRegex.Matches(input);
                     string seed = mineMatches[0].Groups[2].ToString();
-                    string minePublicKey = mineMatches[0].Groups[3].ToString();
-                    string minePublicKeyVal = keys[minePublicKey] ?? minePublicKey;
 
-                    bool mineResult = CommandController.Mine(seed, minePublicKeyVal);
+                    //Create coinbase transaction
+                    BlockDataTransaction coinbaseTx = new BlockDataTransaction()
+                    {
+                        TxOut = new List<TransactionOutput>()
+                        {
+                            new TransactionOutput() {
+                                Address = keyPair.PublicKeyString,
+                                Amount = CommandController.COINBASE_AMT
+                            },
+                        }
+                    };
+                    coinbaseTx.Signature = Crypto.Sign(keyPair.PrivateKey, coinbaseTx.Hash);
+
+                    bool mineResult = CommandController.Mine(seed, coinbaseTx);
                     Console.WriteLine($"- Mining complete");
                     return mineResult;
 

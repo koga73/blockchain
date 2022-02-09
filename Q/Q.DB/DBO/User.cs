@@ -6,7 +6,6 @@ namespace Q.DB.DBO
 {
     internal class User : BlockData
     {
-        [Key]
         [MaxLength(128)]
         public string PublicKey { get; set; }
         

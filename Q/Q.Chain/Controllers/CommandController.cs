@@ -15,7 +15,7 @@ namespace Q.Chain.Controllers
 {
     public class CommandController
     {
-        private static int COINBASE_AMT = 256; //TODO: Make dynamic with halfing
+        public static int COINBASE_AMT = 256; //TODO: Make dynamic with halfing
 
         public enum COMMANDS
         {
@@ -125,21 +125,31 @@ namespace Q.Chain.Controllers
             return false;
         }
 
-        public static bool Mine(string seed, string address)
+        public static bool Mine(string seed, BlockDataTransaction coinbaseTx)
         {
-            BlockDataTransaction coinbase = new BlockDataTransaction();
-            coinbase.TxOut.Add(new TransactionOutput()
+            //Verify coinbase transaction
+            if (coinbaseTx.TxIn.Count > 0 || coinbaseTx.TxOut.Count > 1)
             {
-                Address = address,
-                Amount = COINBASE_AMT
-            });
+                throw new Exception("Invalid coinbase transaction");
+            }
+            if (coinbaseTx.TxOut[0].Amount != COINBASE_AMT)
+            {
+                throw new Exception("Invalid coinbase amount");
+            }
+            bool isValid = Crypto.Verify(Convert.FromBase64String(coinbaseTx.TxOut[0].Address), coinbaseTx.Hash, coinbaseTx.Signature);
+            if (!isValid)
+            {
+                throw new Exception("Invalid coinbase signature");
+            }
 
+            //Initialize mining
             Block stage = BlockChain.Stage;
-            stage.Data.Insert(0, coinbase);
+            stage.Data.Insert(0, coinbaseTx);
             string desired = Enumerable.Repeat("0", stage.Difficulty).Aggregate(string.Empty, (x, y) => x + y);
             string current = seed;
             string nonce;
 
+            //Begin!
             Logger.Info($"Mining...");
             do
             {
@@ -155,6 +165,7 @@ namespace Q.Chain.Controllers
             stage.Nonce = nonce;
             BlockChain.Commit();
 
+            //Complete!
             Logger.Info($"Mined block!");
 
             //Add new

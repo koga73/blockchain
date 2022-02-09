@@ -7,8 +7,6 @@ namespace Q.DB.DBO
 {
     internal class Transaction : BlockData
     {
-        [Key]
-        [MaxLength(128)]
-        public string Hash { get; set; }
+        
     }
 }

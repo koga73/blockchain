@@ -20,7 +20,9 @@ namespace Q.DB
                     PublicKey = user.PublicKey,
                     Timestamp = user.Timestamp,
                     DataIndex = dataIndex,
-                    BlockHash = blockHash
+                    BlockHash = blockHash,
+                    Hash = user.Hash,
+                    Signature = user.Signature
                 });
                 db.SaveChanges();
             }
