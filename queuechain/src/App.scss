@@ -1,5 +1,5 @@
-@import "reset";
-@import "colors";
+@import "_scss_includes/reset";
+@import "_scss_includes/colors";
 
 html,
 body {
@@ -50,32 +50,19 @@ p {
 	margin: 8px 0;
 }
 
-#page {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-}
-
-header {
-	display: flex;
-	flex-direction: row;
-
-	h1 {
-		align-self: flex-end;
-	}
-
-	.select-wrap {
-		margin: 0 0 0 auto;
-	}
-}
-
-main {
-	flex: 1;
-}
-
 .wrap {
 	width: 100%;
 	max-width: 1440px;
 	margin: auto;
 	text-align: center;
+}
+
+.hide-text {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	font-size: 0;
 }
