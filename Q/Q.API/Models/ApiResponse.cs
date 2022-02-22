@@ -3,6 +3,6 @@
     public class ApiResponse
     {
         public bool Success { get; set; }
-        public string Data { get; set; }
+        public dynamic Data { get; set; }
     }
 }
