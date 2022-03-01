@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 using Q.Chain.Models;
 using Q.Data.Common;
@@ -16,6 +17,8 @@ namespace Q.Chain.Controllers
     public class CommandController
     {
         public static int COINBASE_AMT = 256; //TODO: Make dynamic with halfing
+
+        public static Thread? Miner = null;
 
         public enum COMMANDS
         {
@@ -125,7 +128,7 @@ namespace Q.Chain.Controllers
             return false;
         }
 
-        public static bool Mine(string seed, BlockDataTransaction coinbaseTx)
+        public static bool StartMining(string seed, BlockDataTransaction coinbaseTx)
         {
             //Verify coinbase transaction
             if (coinbaseTx.TxIn.Count > 0 || coinbaseTx.TxOut.Count > 1)
@@ -149,33 +152,64 @@ namespace Q.Chain.Controllers
             string current = seed;
             string nonce;
 
-            //Begin!
-            Logger.Info($"Mining...");
-            do
+            //Start miner in new thread
+            if (IsMining())
             {
-                nonce = Crypto.ComputeHash(current);
-                string hash = stage.ComputeHash(nonce);
-                if (hash.Substring(0, stage.Difficulty) == desired)
+                throw new Exception("Miner is already running");
+            }
+            Miner = new Thread(() => {
+                //Begin!
+                Logger.Info($"Mining...");
+                do
                 {
-                    //Found block!
-                    break;
-                }
-                current = nonce;
-            } while (true);
-            stage.Nonce = nonce;
-            BlockChain.Commit();
+                    nonce = Crypto.ComputeHash(current);
+                    string hash = stage.ComputeHash(nonce);
+                    if (hash.Substring(0, stage.Difficulty) == desired)
+                    {
+                        //Found block!
+                        break;
+                    }
+                    current = nonce;
+                } while (true);
+                stage.Nonce = nonce;
+                BlockChain.Commit();
 
-            //Complete!
-            Logger.Info($"Mined block!");
+                //Complete!
+                Logger.Info($"Mined block!");
 
-            //Add new
-            Block next = new Block()
+                //Add new
+                Block next = new Block()
+                {
+                    PreviousBlockHash = stage.Hash,
+                    Height = stage.Height + 1
+                    //TODO: Adjust difficulty
+                };
+                BlockChain.Stage = next;
+
+                //Kill thread
+                Miner = null;
+            });
+            Miner.Start();
+
+            return false;
+        }
+
+        public static bool IsMining()
+        {
+            return Miner != null;
+        }
+
+        public static bool StopMining()
+        {
+            if (!IsMining())
             {
-                PreviousBlockHash = stage.Hash,
-                Height = stage.Height + 1
-                //TODO: Adjust difficulty
-            };
-            BlockChain.Stage = next;
+                throw new Exception("Miner is not running");
+            }
+            if (Miner != null)
+            {
+                Miner.Interrupt();
+            }
+            Miner = null;
 
             return false;
         }

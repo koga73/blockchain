@@ -11,6 +11,7 @@ using Q.Data.Common;
 using Q.Data.Models;
 using Q.Data.Models.Struct;
 using Q.Chain.Controllers;
+using Q.Chain.Models;
 
 namespace Q.API.Controllers
 {
@@ -37,8 +38,14 @@ namespace Q.API.Controllers
 
                     string text = System.IO.File.ReadAllText(file);
                     text = Regex.Replace(text, "(--.+--)|[\\s]", "").Trim();
-                    keys.Add(fileName, text);
+                    keys.Add(fileName.ToLower(), text);
                 }
+            }
+
+            //Create new chain if does not exist
+            if (BlockChain.LastBlock == null)
+            {
+                CommandController.NewChain();
             }
         }
 
@@ -76,21 +83,23 @@ namespace Q.API.Controllers
         [HttpPost("[action]")]
         public ApiResponse RegisterUser(RegistrationRequest request)
         {
+            string alias = request.Alias.ToLower();
+
             try
             {
                 //Generate and save keys
                 string path = Paths.KeysPath;
                 KeyPair keyPair = Crypto.GenerateKeyPair();
                 dynamic keyObj = JsonConvert.DeserializeObject(keyPair.ToString());
-                System.IO.File.WriteAllLines($"{path}/{request.Alias}.private.pem", new string[] { "-----BEGIN PRIVATE KEY-----", keyObj.privateKey, "-----END PRIVATE KEY-----" });
-                System.IO.File.WriteAllLines($"{path}/{request.Alias}.public.pem", new string[] { "-----BEGIN PUBLIC KEY-----", keyObj.publicKey, "-----END PUBLIC KEY-----" });
-                keys.Add($"{request.Alias}.private.pem", (string)keyObj.privateKey);
-                keys.Add($"{request.Alias}.public.pem", (string)keyObj.publicKey);
+                System.IO.File.WriteAllLines($"{path}/{alias}.private.pem", new string[] { "-----BEGIN PRIVATE KEY-----", keyObj.privateKey, "-----END PRIVATE KEY-----" });
+                System.IO.File.WriteAllLines($"{path}/{alias}.public.pem", new string[] { "-----BEGIN PUBLIC KEY-----", keyObj.publicKey, "-----END PUBLIC KEY-----" });
+                keys.Add($"{alias}.private.pem", (string)keyObj.privateKey);
+                keys.Add($"{alias}.public.pem", (string)keyObj.publicKey);
 
                 //Create data object
                 BlockDataRegistration registrationData = new BlockDataRegistration()
                 {
-                    Alias = request.Alias,
+                    Alias = alias,
                     PublicKey = keyPair.PublicKeyString
                 };
                 registrationData.Signature = Crypto.Sign(keyPair.PrivateKey, registrationData.Hash);
@@ -102,7 +111,7 @@ namespace Q.API.Controllers
                     Success = true,
                     Data = new UserResponse()
                     {
-                        Alias = request.Alias,
+                        Alias = alias,
                         PublicKey = keyPair.PublicKeyString
                     }
                 };
@@ -118,11 +127,13 @@ namespace Q.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public ApiResponse Mine(MineRequest request)
+        public ApiResponse StartMining(MineRequest request)
         {
+            string alias = request.Alias.ToLower();
+
             try
             {
-                KeyPair keyPair = KeyPair.Parse(keys[$"{request.Alias}.private.pem"], keys[$"{request.Alias}.public.pem"]);
+                KeyPair keyPair = KeyPair.Parse(keys[$"{alias}.private.pem"], keys[$"{alias}.public.pem"]);
 
                 //Create coinbase transaction
                 BlockDataTransaction coinbaseTx = new BlockDataTransaction()
@@ -137,12 +148,12 @@ namespace Q.API.Controllers
                 };
                 coinbaseTx.Signature = Crypto.Sign(keyPair.PrivateKey, coinbaseTx.Hash);
 
-                CommandController.Mine(request.Seed, coinbaseTx);
+                CommandController.StartMining(request.Seed, coinbaseTx);
 
                 return new ApiResponse()
                 {
                     Success = true,
-                    Data = "STARTED MINING!"
+                    Data = "Mining..."
                 };
             }
             catch (Exception ex)
@@ -153,7 +164,50 @@ namespace Q.API.Controllers
                     Data = ex.Message
                 };
             }
+        }
 
+        [HttpGet("[action]")]
+        public ApiResponse IsMining()
+        {
+            try
+            {
+                return new ApiResponse()
+                {
+                    Success = true,
+                    Data = CommandController.IsMining()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse()
+                {
+                    Success = false,
+                    Data = ex.Message
+                };
+            }
+        }
+
+        [HttpPost("[action]")]
+        public ApiResponse StopMining()
+        {
+            try
+            {
+                CommandController.StopMining();
+
+                return new ApiResponse()
+                {
+                    Success = true,
+                    Data = "Stopped Mining"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse()
+                {
+                    Success = false,
+                    Data = ex.Message
+                };
+            }
         }
     }
 }

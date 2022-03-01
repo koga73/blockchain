@@ -8,7 +8,7 @@ namespace Q.Data.Models
 {
     public class Block
     {
-        public static int MIN_DIFFICULTY = 4; //Number of leading zeros
+        public static int MIN_DIFFICULTY = 5; //Number of leading zeros
         public static int MAX_DIFFICULTY = 16; //Number of leading zeros
 
         public string PreviousBlockHash;

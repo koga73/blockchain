@@ -280,7 +280,7 @@ namespace Q.Cli
                     };
                     coinbaseTx.Signature = Crypto.Sign(keyPair.PrivateKey, coinbaseTx.Hash);
 
-                    bool mineResult = CommandController.Mine(seed, coinbaseTx);
+                    bool mineResult = CommandController.StartMining(seed, coinbaseTx);
                     Console.WriteLine($"- Mining complete");
                     return mineResult;
 
