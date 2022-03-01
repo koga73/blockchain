@@ -5,6 +5,8 @@ namespace Q.Data.Common
 {
     public class Logger
     {
+        public static string LOG_FILE_NAME = "q.log";
+
         public enum TYPE
         {
             ERROR,
@@ -14,7 +16,8 @@ namespace Q.Data.Common
 
         static Logger()
         {
-            Trace.Listeners.Add(new TextWriterTraceListener("application.log", "myListener"));
+            string logFile = Path.Join(Paths.LogsPath, LOG_FILE_NAME); ;
+            Trace.Listeners.Add(new TextWriterTraceListener(logFile, "myListener"));
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Trace.AutoFlush = true;
         }

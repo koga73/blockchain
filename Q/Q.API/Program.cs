@@ -13,6 +13,10 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddCors(p => p.AddPolicy("q", builder =>
+        {
+            builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+        }));
 
         var app = builder.Build();
 
@@ -23,6 +27,7 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseCors("q");
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();

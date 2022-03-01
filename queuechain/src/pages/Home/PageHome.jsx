@@ -4,7 +4,7 @@ import "./PageHome.scss";
 
 function PageHome() {
 	return (
-		<section id="Home">
+		<section id="home">
 			<h2>Messages</h2>
 		</section>
 	);

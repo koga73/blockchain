@@ -4,6 +4,7 @@
     {
         const string APP_DIR = "Q";
         const string KEYS_DIR = "keys";
+        const string LOGS_DIR = "logs";
 
         public static string ApplicationPath {
             get {
@@ -20,6 +21,17 @@
             {
                 string appPath = ApplicationPath;
                 string dirPath = Path.Join(appPath, KEYS_DIR);
+                TryCreateDir(dirPath);
+                return dirPath;
+            }
+        }
+
+        public static string LogsPath
+        {
+            get
+            {
+                string appPath = ApplicationPath;
+                string dirPath = Path.Join(appPath, LOGS_DIR);
                 TryCreateDir(dirPath);
                 return dirPath;
             }
