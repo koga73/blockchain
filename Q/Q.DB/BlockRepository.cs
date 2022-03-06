@@ -45,6 +45,12 @@ namespace Q.DB
                     BlockDataTransaction transactionData = (BlockDataTransaction)blockData;
                     TransactionRepository.Add(transactionData, i, block.Hash);
                 }
+                //Messages
+                else if (blockData is BlockDataMessage)
+                {
+                    BlockDataMessage messageData = (BlockDataMessage)blockData;
+                    MessageRepository.Add(messageData, i, block.Hash);
+                }
             }
         }
 
@@ -144,6 +150,18 @@ namespace Q.DB
                             Address = txo.Address,
                             Amount = txo.Amount
                         }).ToList<TransactionOutput>()
+                    });
+                }
+
+                //Messages
+                var messages = from message in db.Messages where message.BlockHash == block.Hash orderby message.DataIndex select message;
+                foreach (var message in messages)
+                {
+                    data.Add(message.DataIndex, new BlockDataMessage()
+                    {
+                        PublicKey = message.PublicKey,
+                        Data = message.Data,
+                        Timestamp = message.Timestamp
                     });
                 }
 

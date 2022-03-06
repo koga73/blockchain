@@ -104,14 +104,14 @@ namespace Q.Chain.Controllers
 
         public static bool Register(BlockDataRegistration registrationData)
         {
-            Logger.Info($"Added data: {registrationData}");
-
             bool isValid = Crypto.Verify(Convert.FromBase64String(registrationData.PublicKey), registrationData.Hash, registrationData.Signature);
             if (!isValid)
             {
                 throw new Exception("Invalid registration signature");
             }
             BlockChain.Stage.Data.Add(registrationData);
+
+            Logger.Info($"Added data: {registrationData}");
 
             return false;
         }
@@ -123,8 +123,17 @@ namespace Q.Chain.Controllers
             return false;
         }
 
-        public static bool Reference(BlockDataReference referenceData)
+        public static bool Message(BlockDataMessage messageData)
         {
+            bool isValid = Crypto.Verify(Convert.FromBase64String(messageData.PublicKey), messageData.Hash, messageData.Signature);
+            if (!isValid)
+            {
+                throw new Exception("Invalid message signature");
+            }
+            BlockChain.Stage.Data.Add(messageData);
+
+            Logger.Info($"Added data: {messageData}");
+
             return false;
         }
 

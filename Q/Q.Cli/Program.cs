@@ -73,7 +73,7 @@ namespace Q.Cli
             Console.WriteLine("");
             Console.WriteLine("  register {ALIAS}");
             Console.WriteLine("  transaction {AMOUNT} {FROM} {TO}");
-            Console.WriteLine("  post {FROM} {TO} {DESCRIPTION} {DATA}");
+            Console.WriteLine("  message {MESSAGE}");
             Console.WriteLine("");
             Console.WriteLine("  mine {SEED}");
             Console.WriteLine("");
@@ -84,7 +84,7 @@ namespace Q.Cli
 
         static bool ParseInput(string input)
         {
-            Regex commandRegex = new Regex("^(generatekeys|savekeys|loadkeys|setkeys|newchain|viewchain|viewstage|register|transaction|post|mine)");
+            Regex commandRegex = new Regex("^(generatekeys|savekeys|loadkeys|setkeys|newchain|viewchain|viewstage|register|transaction|message|mine)");
 
             Regex generatekeysRegex = new Regex("^(generatekeys)$");
             Regex savekeysRegex = new Regex("^(savekeys)\\s(.+)$");
@@ -97,7 +97,7 @@ namespace Q.Cli
 
             Regex registerRegex = new Regex("^(register)\\s(.+?)$");
             Regex transactionRegex = new Regex("^(transaction)\\s([\\d.]+?)\\s(.+?)\\s(.+?)$");
-            Regex postRegex = new Regex("^(post)\\s(.+?)\\s(.+?)\\s(\".+\"|.+?)\\s(\".+\"|.+?)$");
+            Regex messageRegex = new Regex("^(message)\\s(.+?)$");
 
             Regex mineRegex = new Regex("^(mine)\\s(.+)$");
 
@@ -239,25 +239,24 @@ namespace Q.Cli
                     Console.WriteLine($"- Created transaction");
                     return false;//transactionResult;
 
-                case "post":
-                    if (!postRegex.IsMatch(input))
+                case "message":
+                    if (!messageRegex.IsMatch(input))
                     {
                         throw new Exception("Invalid command syntax");
                     }
-                    MatchCollection postMatches = postRegex.Matches(input);
-                    string postFrom = postMatches[0].Groups[2].ToString();
-                    string postTo = postMatches[0].Groups[3].ToString();
-                    string description = postMatches[0].Groups[4].ToString().Replace("\"", "");
-                    string data = postMatches[0].Groups[5].ToString().Replace("\"", "");
+                    MatchCollection messageMatches = messageRegex.Matches(input);
+                    string messageMessage = messageMatches[0].Groups[2].ToString();
 
-                    dynamic postData = new ExpandoObject();
-                    postData.from = postFrom;
-                    postData.to = postTo;
-                    postData.description = description;
-                    postData.data = data;
-                    //bool postResult = CommandController.Reference();
-                    Console.WriteLine($"- Posted data");
-                    return false;//postResult;
+                    //Create data object
+                    BlockDataMessage messageData = new BlockDataMessage()
+                    {
+                        PublicKey = keyPair.PublicKeyString,
+                        Data = messageMessage
+                    };
+                    messageData.Signature = Crypto.Sign(keyPair.PrivateKey, messageData.Hash);
+                    bool messageResult = CommandController.Message(messageData);
+                    Console.WriteLine($"- Posted message");
+                    return false;
 
                 case "mine":
                     if (!mineRegex.IsMatch(input))

@@ -14,11 +14,12 @@ namespace Q.DB
 
         public string DbPath { get; set; }
 
-        public DbSet<DBO.User> Users { get; set; }
         public DbSet<DBO.Block> Blocks { get; set; }
+        public DbSet<DBO.User> Users { get; set; }
         public DbSet<DBO.Transaction> Transactions { get; set; }
         public DbSet<DBO.Struct.TransactionInput> TransactionInputs { get; set; }
         public DbSet<DBO.Struct.TransactionOutput> TransactionOutputs { get; set; }
+        public DbSet<DBO.Message> Messages { get; set; }
 
         public Context()
         {
