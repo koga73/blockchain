@@ -18,7 +18,8 @@ namespace Q.Chain.Controllers
     {
         public static int COINBASE_AMT = 256; //TODO: Make dynamic with halfing
 
-        public static Thread? Miner = null;
+        private static Thread? Miner = null;
+        private static double MiningSpeed = 0; //KH/s
 
         public enum COMMANDS
         {
@@ -161,6 +162,11 @@ namespace Q.Chain.Controllers
             string current = seed;
             string nonce;
 
+            //Timing
+            DateTime lastTime = DateTime.Now;
+            double secondsTimer = 0;
+            int loops = 0;
+
             //Start miner in new thread
             if (IsMining())
             {
@@ -171,6 +177,19 @@ namespace Q.Chain.Controllers
                 Logger.Info($"Mining...");
                 do
                 {
+                    //Timing to compute hashrate
+                    DateTime currentTime = DateTime.Now;
+                    double delta = (currentTime - lastTime).TotalMilliseconds;
+                    lastTime = currentTime;
+                    secondsTimer += delta;
+                    if (secondsTimer > 1000)
+                    {
+                        secondsTimer = secondsTimer % 1000;
+                        MiningSpeed = Math.Round(loops * 0.001, 2);
+                        Logger.Info($"Mining speed: {MiningSpeed}KH/s");
+                        loops = 0;
+                    }
+
                     nonce = Crypto.ComputeHash(current);
                     string hash = stage.ComputeHash(nonce);
                     if (hash.Substring(0, stage.Difficulty) == desired)
@@ -179,11 +198,14 @@ namespace Q.Chain.Controllers
                         break;
                     }
                     current = nonce;
+
+                    loops++;
                 } while (true);
                 stage.Nonce = nonce;
                 BlockChain.Commit();
 
                 //Complete!
+                MiningSpeed = 0;
                 Logger.Info($"Mined block!");
 
                 //Add new
@@ -206,6 +228,11 @@ namespace Q.Chain.Controllers
         public static bool IsMining()
         {
             return Miner != null;
+        }
+
+        public static string GetMiningSpeed()
+        {
+            return $"{MiningSpeed}KH/s";
         }
 
         public static bool StopMining()

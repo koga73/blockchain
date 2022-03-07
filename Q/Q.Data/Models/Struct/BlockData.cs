@@ -6,9 +6,9 @@ namespace Q.Data.Models.Struct
 {
     public abstract class BlockData
     {
-        public DateTime Timestamp;
+        public DateTime Timestamp { get; set; }
         public abstract string Hash { get; }
-        public string Signature;
+        public string Signature { get; set; }
 
         public BlockData()
         {

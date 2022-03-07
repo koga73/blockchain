@@ -28,6 +28,32 @@ namespace Q.DB
             }
         }
 
+        public static List<BlockDataMessage> SearchMessages(string query)
+        {
+            using (Context db = new Context())
+            {
+                IEnumerable<DBO.Message> messages =
+                    !String.IsNullOrEmpty(query) ?
+                    (from row in db.Messages where row.Data.Contains(query, StringComparison.OrdinalIgnoreCase) select row) :    
+                    (from row in db.Messages select row);
+                if (messages != null)
+                {
+                    return messages.Select(row => {
+                        BlockDataRegistration user = UserRepository.GetUserByKey(row.PublicKey);
+                        return new BlockDataMessage()
+                        {
+                            Timestamp = row.Timestamp,
+                            Signature = row.Signature,
+                            PublicKey = row.PublicKey,
+                            Data = row.Data,
+                            Alias = user != null ? user.Alias : null
+                        };
+                    }).ToList();
+                }
+                return null;
+            }
+        }
+
         public static void Clear()
         {
             using (Context db = new Context())

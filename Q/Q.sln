@@ -13,11 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Q.API", "Q.API\Q.API.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Q.Wallet", "Q.Wallet\Q.Wallet.csproj", "{D9BCAB55-F2E4-426C-A3B7-28A9634DFFA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Q.Chain", "Q.Chain\Q.Chain.csproj", "{264EB011-CDB2-4939-97E1-CEA831A750E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Q.Chain", "Q.Chain\Q.Chain.csproj", "{264EB011-CDB2-4939-97E1-CEA831A750E5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A84A6868-C764-4B8A-881E-029E2BF2FE11} = {A84A6868-C764-4B8A-881E-029E2BF2FE11}
 		{8AF1B6F7-168F-4FD1-8E70-DBC639E5BEFE} = {8AF1B6F7-168F-4FD1-8E70-DBC639E5BEFE}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Q.UI", "Q.UI\Q.UI.csproj", "{EE9914F3-8D42-4C4A-BD8D-B5EBAA3D5205}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{264EB011-CDB2-4939-97E1-CEA831A750E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{264EB011-CDB2-4939-97E1-CEA831A750E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{264EB011-CDB2-4939-97E1-CEA831A750E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE9914F3-8D42-4C4A-BD8D-B5EBAA3D5205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE9914F3-8D42-4C4A-BD8D-B5EBAA3D5205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE9914F3-8D42-4C4A-BD8D-B5EBAA3D5205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE9914F3-8D42-4C4A-BD8D-B5EBAA3D5205}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

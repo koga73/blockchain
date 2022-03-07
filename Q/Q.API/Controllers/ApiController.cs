@@ -174,7 +174,11 @@ namespace Q.API.Controllers
                 return new ApiResponse()
                 {
                     Success = true,
-                    Data = CommandController.IsMining()
+                    Data = new MiningResponse()
+                    {
+                        IsMining = CommandController.IsMining(),
+                        MiningSpeed = CommandController.GetMiningSpeed()
+                    }
                 };
             }
             catch (Exception ex)
@@ -198,6 +202,67 @@ namespace Q.API.Controllers
                 {
                     Success = true,
                     Data = "Stopped Mining"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse()
+                {
+                    Success = false,
+                    Data = ex.Message
+                };
+            }
+        }
+
+        [HttpPost("[action]")]
+        public ApiResponse PostMessage(PostMessageRequest request)
+        {
+            try
+            {
+                //Grab keys
+                string privateKeyKey = $"{request.Alias}.private.pem";
+                string publicKeyKey = $"{request.Alias}.public.pem";
+                if (!keys.ContainsKey(privateKeyKey) || !keys.ContainsKey(publicKeyKey))
+                {
+                    throw new Exception("Alias keys not found");
+                }
+                KeyPair keyPair = KeyPair.Parse(keys[privateKeyKey], keys[publicKeyKey]);
+                
+                //Create data object
+                BlockDataMessage messageData = new BlockDataMessage()
+                {
+                    Alias = request.Alias,
+                    PublicKey = keyPair.PublicKeyString,
+                    Data = request.Message
+                };
+                messageData.Signature = Crypto.Sign(keyPair.PrivateKey, messageData.Hash);
+                bool registrationResult = CommandController.Message(messageData);
+
+                //Return response
+                return new ApiResponse()
+                {
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse()
+                {
+                    Success = false,
+                    Data = ex.Message
+                };
+            }
+        }
+
+        [HttpGet("[action]")]
+        public ApiResponse SearchMessages(string? q)
+        {
+            try
+            {
+                return new ApiResponse()
+                {
+                    Success = true,
+                    Data = DB.MessageRepository.SearchMessages(q)
                 };
             }
             catch (Exception ex)

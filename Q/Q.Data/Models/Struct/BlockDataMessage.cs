@@ -9,6 +9,10 @@ namespace Q.Data.Models.Struct
     {
         public string PublicKey { get; set; }
         public string Data { get; set; }
+        
+        //Optional - for response only
+        public string Alias { get; set; }
+
         override public string Hash
         {
             get
@@ -20,7 +24,7 @@ namespace Q.Data.Models.Struct
 
         override public string ToString()
         {
-            return $"{{ Timestamp:{Timestamp.Ticks}, \"Hash\":\"{Hash}\", \"PublicKey\":\"{PublicKey}\", \"Data\":\"{Data}\"}}";
+            return $"{{ Timestamp:{Timestamp.Ticks}, \"Hash\":\"{Hash}\", \"PublicKey\":\"{PublicKey}\", \"Data\":\"{Data}\", \"Alias\":\"{Alias}\"}}";
         }
     }
 }
