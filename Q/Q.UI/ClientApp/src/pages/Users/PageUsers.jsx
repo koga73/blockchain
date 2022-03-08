@@ -39,14 +39,14 @@ function PageUsers() {
 						<thead>
 							<tr>
 								<th>Alias</th>
-								<th>PublicKey</th>
 							</tr>
 						</thead>
 						<tbody>
 							{stateUsers.map((user) => (
 								<tr key={user.alias}>
-									<td className="alias">{user.alias}</td>
-									<td className="publicKey">{user.publicKey}</td>
+									<td className="alias" title={user.publicKey}>
+										{user.alias}
+									</td>
 								</tr>
 							))}
 						</tbody>

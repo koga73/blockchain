@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {BrowserRouter, Routes, Route, Link} from "react-router-dom";
 
 import PageHome from "./pages/Home/PageHome";
@@ -9,48 +9,58 @@ import PageMining from "./pages/Mining/PageMining";
 import "./App.scss";
 
 function App() {
+	const [stateAccount, setStateAccount] = useState("select");
+
 	return (
 		<BrowserRouter>
 			<div id="page">
-				<header className="wrap">
-					<h1>Queuechain</h1>
-					<ul>
-						<li>
-							<Link to="/" title="Messages">
-								<span className="hide-text">Messages</span>
-								<i className="fas fa-comment"></i>
-							</Link>
-						</li>
-						<li>
-							<Link to="/users" title="Users">
-								<span className="hide-text">Users</span>
-								<i className="fas fa-users"></i>
-							</Link>
-						</li>
-						<li>
-							<Link to="/settings" title="Settings">
-								<span className="hide-text">Settings</span>
-								<i className="fas fa-cog"></i>
-							</Link>
-						</li>
-						<li>
-							<Link to="/mining" title="Mining">
-								<span className="hide-text">Mining</span>
-								<i className="fas fa-coins"></i>
-							</Link>
-						</li>
-					</ul>
-
-					{/*
-					<div className="select-wrap">
-						<label>Account:</label>
-						<select>
-							<option disabled>Select an account</option>
-							<option value="new">Create new account</option>
-							<option value="manage">Manage accounts</option>
-						</select>
+				<header>
+					<div className="content-left">
+						<h1>Queuechain</h1>
+						<Link to="/" id="linkMessages">
+							<span className="hide-text">Messages</span>
+						</Link>
 					</div>
-					*/}
+					<div className="content-right">
+						<button id="btnMenu" type="button">
+							<span className="hide-text">Menu</span>
+							<i className="fas fa-bars"></i>
+						</button>
+						<nav id="menu">
+							<ul>
+								<li>
+									<Link to="/" title="Messages">
+										<i className="fas fa-comments"></i>
+										<span className="link-copy">Messages</span>
+									</Link>
+								</li>
+								<li>
+									<Link to="/users" title="Users">
+										<i className="fas fa-users"></i>
+										<span className="link-copy">Users</span>
+									</Link>
+								</li>
+								<li>
+									<Link to="/mining" title="Mining">
+										<i className="fas fa-coins"></i>
+										<span className="link-copy">Mining</span>
+									</Link>
+								</li>
+								<li>
+									<Link to="/settings" title="Settings">
+										<i className="fas fa-cog"></i>
+										<span className="link-copy">Settings</span>
+									</Link>
+								</li>
+							</ul>
+							<footer className="wrap">
+								<p>&copy;Copyright 2022 Savino Systems LLC</p>
+								<p>
+									<Link to="mailto:info@savino.systems">info@savino.systems</Link>
+								</p>
+							</footer>
+						</nav>
+					</div>
 				</header>
 				{/*<main className={["wrap", section ? `section-${section}` : null].join(" ").trim().replace(/\s+/g, " ")}>*/}
 				<main className="wrap">
@@ -61,12 +71,6 @@ function App() {
 						<Route exact path="/mining" element={<PageMining />} />
 					</Routes>
 				</main>
-				<footer className="wrap">
-					<p>&copy; Copyright 2022 Savino Systems LLC</p>
-					<p>
-						<Link to="mailto:info@savino.systems">info@savino.systems</Link>
-					</p>
-				</footer>
 			</div>
 		</BrowserRouter>
 	);
