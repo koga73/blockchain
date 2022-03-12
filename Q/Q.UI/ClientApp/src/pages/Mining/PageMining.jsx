@@ -75,7 +75,7 @@ function PageMining() {
 						</Link>
 					)}
 					{stateUsers && (
-						<React.Fragment>
+						<form>
 							<div className="select-wrap">
 								<label>Select a user to earn mining rewards</label>
 								<select value={stateUser} onChange={(evt) => setStateUser(evt.target.value)}>
@@ -91,18 +91,18 @@ function PageMining() {
 							</div>
 
 							{!stateIsMining && (
-								<button onClick={handler_start_click} className="btn">
+								<button type="button" onClick={handler_start_click} className="btn">
 									<i className="fas fa-play"></i>
 									<span>Start Mining</span>
 								</button>
 							)}
 							{stateIsMining && (
-								<button onClick={handler_stop_click} className="btn">
+								<button type="button" onClick={handler_stop_click} className="btn">
 									<i className="fas fa-stop"></i>
 									<span>Stop Mining</span>
 								</button>
 							)}
-						</React.Fragment>
+						</form>
 					)}
 				</BottomDrawer>
 			</section>
