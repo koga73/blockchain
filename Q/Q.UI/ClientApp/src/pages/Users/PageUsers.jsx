@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 
+import BottomDrawer from "../../components/BottomDrawer";
 import Api from "../../services/Api";
 
 import "./PageUsers.scss";
@@ -31,39 +32,41 @@ function PageUsers() {
 	}
 
 	return (
-		<React.Fragment>
-			<section id="users">
-				<h2>Users</h2>
-				{stateUsers && (
-					<table>
-						<thead>
-							<tr>
-								<th>Alias</th>
+		<section id="users">
+			<h2>Users</h2>
+			{stateUsers && (
+				<table>
+					<thead>
+						<tr>
+							<th>Alias</th>
+						</tr>
+					</thead>
+					<tbody>
+						{stateUsers.map((user) => (
+							<tr key={user.alias}>
+								<td className="alias" title={user.publicKey}>
+									{user.alias}
+								</td>
 							</tr>
-						</thead>
-						<tbody>
-							{stateUsers.map((user) => (
-								<tr key={user.alias}>
-									<td className="alias" title={user.publicKey}>
-										{user.alias}
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				)}
-			</section>
-			<section id="register">
-				<h3>Register</h3>
+						))}
+					</tbody>
+				</table>
+			)}
+
+			<BottomDrawer>
 				<form onSubmit={handler_register_submit}>
 					<div className="text-wrap">
-						<label htmlFor="txtRegister">Alias</label>
-						<input id="txtRegister" name="txtRegister" type="text" value={stateAlias} onChange={(evt) => setStateAlias(evt.target.value)} />
+						<label htmlFor="txtRegister" className="hide-text">
+							Alias
+						</label>
+						<input id="txtRegister" name="txtRegister" type="text" placeholder="Alias" value={stateAlias} onChange={(evt) => setStateAlias(evt.target.value)} />
 					</div>
-					<button type="submit">Register Alias</button>
+					<button type="submit" className="btn">
+						Register
+					</button>
 				</form>
-			</section>
-		</React.Fragment>
+			</BottomDrawer>
+		</section>
 	);
 }
 export default PageUsers;

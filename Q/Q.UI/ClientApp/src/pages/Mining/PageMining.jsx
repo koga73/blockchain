@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 
+import BottomDrawer from "../../components/BottomDrawer";
 import Api from "../../services/Api";
 
 import "./PageMining.scss";
@@ -58,42 +60,51 @@ function PageMining() {
 		<React.Fragment>
 			<section id="mining">
 				<h2>Mining</h2>
+				<section id="miningLog">
+					<h3>Mining Log</h3>
 
-				{stateUsers && (
-					<div className="select-wrap">
-						<label>Select a user to earn mining rewards</label>
-						<select value={stateUser} onChange={(evt) => setStateUser(evt.target.value)}>
-							<option value="none" disabled>
-								Select a user
-							</option>
-							{stateUsers.map((user) => (
-								<option value={user.alias} key={user.alias}>
-									{user.alias}
-								</option>
-							))}
-						</select>
-					</div>
-				)}
+					{stateLog.map((log, lineIndex) => (
+						<p key={lineIndex}>{log}</p>
+					))}
+				</section>
 
-				{!stateIsMining && (
-					<button onClick={handler_start_click}>
-						<i className="fas fa-play"></i>
-						<span>Start Mining</span>
-					</button>
-				)}
-				{stateIsMining && (
-					<button onClick={handler_stop_click}>
-						<i className="fas fa-stop"></i>
-						<span>Stop Mining</span>
-					</button>
-				)}
-			</section>
-			<section id="miningLog">
-				<h3>Mining Log</h3>
+				<BottomDrawer>
+					{!stateUsers && (
+						<Link to="/users" className="btn">
+							Register to begin mining
+						</Link>
+					)}
+					{stateUsers && (
+						<React.Fragment>
+							<div className="select-wrap">
+								<label>Select a user to earn mining rewards</label>
+								<select value={stateUser} onChange={(evt) => setStateUser(evt.target.value)}>
+									<option value="none" disabled>
+										Select a user
+									</option>
+									{stateUsers.map((user) => (
+										<option value={user.alias} key={user.alias}>
+											{user.alias}
+										</option>
+									))}
+								</select>
+							</div>
 
-				{stateLog.map((log, lineIndex) => (
-					<p key={lineIndex}>{log}</p>
-				))}
+							{!stateIsMining && (
+								<button onClick={handler_start_click} className="btn">
+									<i className="fas fa-play"></i>
+									<span>Start Mining</span>
+								</button>
+							)}
+							{stateIsMining && (
+								<button onClick={handler_stop_click} className="btn">
+									<i className="fas fa-stop"></i>
+									<span>Stop Mining</span>
+								</button>
+							)}
+						</React.Fragment>
+					)}
+				</BottomDrawer>
 			</section>
 		</React.Fragment>
 	);

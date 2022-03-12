@@ -46,5 +46,28 @@ class Api {
 			}
 		}).then((response) => response.json());
 	}
+
+	static postMessage(alias, message) {
+		return fetch(`${HOST}/api/postmessage`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				alias,
+				message
+			})
+		}).then((response) => response.json());
+	}
+
+	static searchMessages(query) {
+		let url = `${HOST}/api/searchmessages`;
+		if (query) {
+			url += `?q=${query}`;
+		}
+		return fetch(url, {
+			method: "GET"
+		}).then((response) => response.json());
+	}
 }
 export default Api;
