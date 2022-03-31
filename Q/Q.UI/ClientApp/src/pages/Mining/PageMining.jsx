@@ -36,7 +36,7 @@ function PageMining() {
 	useEffect(() => {
 		if (stateIsMining) {
 			if (!stateInterval) {
-				setStateInterval(setInterval(getIsMining.bind(_this), INTERVAL_MINING));
+				setStateInterval(setInterval(getIsMining, INTERVAL_MINING));
 			}
 		} else {
 			clear();
@@ -52,7 +52,6 @@ function PageMining() {
 	}, [stateIsMining]);
 
 	const getIsMining = useCallback(() => {
-		const _this = this;
 		Api.isMining()
 			.then((response) => {
 				const isMining = response.data.isMining === true;
