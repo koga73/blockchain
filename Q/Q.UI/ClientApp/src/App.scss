@@ -225,4 +225,12 @@ hr {
 	text-transform: uppercase;
 	border: 0;
 	align-self: flex-end;
+
+	&:not([disabled]) {
+		cursor: pointer;
+	}
+
+	i {
+		margin-right: 12px;
+	}
 }
