@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from "react";
+import React, {useEffect, useState, useRef, useCallback} from "react";
 import {Link} from "react-router-dom";
 
 import BottomDrawer from "../../components/BottomDrawer";
@@ -32,18 +32,32 @@ function PageMining() {
 		};
 	}, []);
 
+	//Create interval for mining speed
+	useEffect(() => {
+		if (stateIsMining) {
+			if (!stateInterval) {
+				setStateInterval(setInterval(getIsMining.bind(_this), INTERVAL_MINING));
+			}
+		} else {
+			clear();
+		}
+
+		function clear() {
+			if (stateInterval) {
+				clearInterval(stateInterval);
+				setStateInterval(0);
+			}
+		}
+		return clear;
+	}, [stateIsMining]);
+
 	const getIsMining = useCallback(() => {
+		const _this = this;
 		Api.isMining()
 			.then((response) => {
 				const isMining = response.data.isMining === true;
 				setStateIsMining(isMining);
-				setStateLog([...stateLog, isMining ? `Mining speed: ${response.data.miningSpeed}` : "Not Mining"]);
-				if (isMining && !stateInterval) {
-					setStateInterval(setInterval(getIsMining, INTERVAL_MINING));
-				} else if (stateInterval) {
-					clearInterval(stateInterval);
-					setStateInterval(0);
-				}
+				setStateLog((log) => [...log, isMining ? `Mining speed: ${response.data.miningSpeed}` : "Not Mining"]);
 			})
 			.catch((err) => console.error(err));
 	}, [stateLog, stateInterval]);
@@ -52,7 +66,7 @@ function PageMining() {
 		//TODO: Remove hard-coded values
 		Api.startMining(`${stateUser}${new Date().getTime()}`, stateUser)
 			.then((response) => {
-				setStateLog([...stateLog, "Started Mining!"]);
+				setStateLog((log) => [...log, "Started Mining!"]);
 				getIsMining();
 			})
 			.catch((err) => console.error(err));
@@ -61,7 +75,7 @@ function PageMining() {
 	const handler_stop_click = useCallback(() => {
 		Api.startMining()
 			.then((response) => {
-				setStateLog([...stateLog, "Stopped Mining"]);
+				setStateLog((log) => [...log, "Stopped Mining"]);
 			})
 			.catch((err) => console.error(err));
 	}, [stateLog]);
